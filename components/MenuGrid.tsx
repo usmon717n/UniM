@@ -87,6 +87,14 @@ const MenuGrid = () => {
           </div>
         );
 
+        if (item.title === 'Akkaunt') {
+          return (
+            <Link key={index} href="/akkaunt" className="w-full h-full">
+              {CardContent}
+            </Link>
+          );
+        }
+
         if (item.title === 'Maskan') {
           return (
             <Link key={index} href="/maskan" className="w-full h-full">
