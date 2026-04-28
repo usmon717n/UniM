@@ -1,5 +1,6 @@
 import React from 'react';
 import { ShoppingCart, Bell, MessageSquare } from 'lucide-react';
+import Link from 'next/link';
 
 const Header = () => {
   return (
@@ -30,9 +31,12 @@ const Header = () => {
         </button>
 
         <div className="flex items-center gap-3">
-          <button className="w-9 h-9 rounded-full bg-[#EDF1F5] flex items-center justify-center text-[#5C6166] hover:bg-gray-200 transition-colors">
+          <Link 
+            href="/suhbatlar"
+            className="w-9 h-9 rounded-full bg-[#EDF1F5] flex items-center justify-center text-[#5C6166] hover:bg-gray-200 transition-colors"
+          >
             <MessageSquare size={18} />
-          </button>
+          </Link>
           <button className="w-9 h-9 rounded-full bg-[#EDF1F5] flex items-center justify-center text-[#5C6166] hover:bg-gray-200 transition-colors">
             <ShoppingCart size={18} />
           </button>
