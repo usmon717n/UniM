@@ -95,6 +95,14 @@ const MenuGrid = () => {
           );
         }
 
+        if (item.title === 'Mutaxassis') {
+          return (
+            <Link key={index} href="/mutaxassis" className="w-full h-full">
+              {CardContent}
+            </Link>
+          );
+        }
+
         return (
           <div key={index} className="w-full h-full">
             {CardContent}

@@ -10,7 +10,7 @@ import {
   Lock, 
   Shield 
 } from 'lucide-react';
-import MaskanHeader from '@/components/MaskanHeader';
+import SubPageHeader from '@/components/SubPageHeader';
 import SectionTitle from '@/components/SectionTitle';
 import HomeInfoCard from '@/components/HomeInfoCard';
 import UtilityCard from '@/components/UtilityCard';
@@ -24,7 +24,7 @@ export default function MaskanPage() {
     <main className="min-h-screen bg-[#F4F6F9] pb-10">
       <div className="max-w-[1100px] mx-auto bg-[#F4F6F9] relative min-h-screen">
         {/* Header */}
-        <MaskanHeader />
+        <SubPageHeader />
 
         {/* Page Title */}
         <SectionTitle 
