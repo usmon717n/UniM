@@ -10,6 +10,7 @@ import {
   Lightbulb 
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import Link from 'next/link';
 
 const menuItems = [
   {
@@ -66,25 +67,40 @@ const menuItems = [
 const MenuGrid = () => {
   return (
     <div className="px-5 pb-32 grid grid-cols-2 gap-4 md:grid-cols-2 lg:grid-cols-4">
-      {menuItems.map((item, index) => (
-        <div
-          key={index}
-          className="bg-white rounded-[32px] p-6 shadow-sm border border-gray-50 flex flex-col items-center text-center hover:shadow-md transition-shadow cursor-pointer aspect-square justify-center"
-        >
-          <div className={cn(
-            "w-16 h-16 rounded-full bg-gradient-to-br flex items-center justify-center mb-4 shadow-inner",
-            item.gradient
-          )}>
-            <item.icon size={30} className={item.textColor || "text-white"} />
+      {menuItems.map((item, index) => {
+        const CardContent = (
+          <div
+            className="bg-white rounded-[32px] p-6 shadow-sm border border-gray-50 flex flex-col items-center text-center hover:shadow-md transition-shadow cursor-pointer aspect-square justify-center w-full h-full"
+          >
+            <div className={cn(
+              "w-16 h-16 rounded-full bg-gradient-to-br flex items-center justify-center mb-4 shadow-inner",
+              item.gradient
+            )}>
+              <item.icon size={30} className={item.textColor || "text-white"} />
+            </div>
+            <h3 className="text-[#1A1C1E] text-sm font-bold mb-1 leading-tight">
+              {item.title}
+            </h3>
+            <p className="text-[#8E949A] text-[10px] font-medium leading-tight px-1 line-clamp-2">
+              {item.subtitle}
+            </p>
           </div>
-          <h3 className="text-[#1A1C1E] text-sm font-bold mb-1 leading-tight">
-            {item.title}
-          </h3>
-          <p className="text-[#8E949A] text-[10px] font-medium leading-tight px-1 line-clamp-2">
-            {item.subtitle}
-          </p>
-        </div>
-      ))}
+        );
+
+        if (item.title === 'Maskan') {
+          return (
+            <Link key={index} href="/maskan" className="w-full h-full">
+              {CardContent}
+            </Link>
+          );
+        }
+
+        return (
+          <div key={index} className="w-full h-full">
+            {CardContent}
+          </div>
+        );
+      })}
     </div>
   );
 };

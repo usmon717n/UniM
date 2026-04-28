@@ -1,17 +1,18 @@
 import React from 'react';
 import { Home, MessageSquare, ShieldAlert } from 'lucide-react';
+import Link from 'next/link';
 
 const BottomNav = () => {
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 flex justify-center md:hidden">
       <div className="w-full max-w-[1100px] bg-white/80 backdrop-blur-xl border-t border-gray-100 px-8 py-3 flex items-center justify-between pb-6">
         {/* Bosh sahifa */}
-        <button className="flex flex-col items-center gap-1 text-[#2D3A5D]">
+        <Link href="/" className="flex flex-col items-center gap-1 text-[#2D3A5D]">
           <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center mb-0.5">
             <Home size={20} />
           </div>
           <span className="text-[10px] font-bold">Bosh sahifa</span>
-        </button>
+        </Link>
 
         {/* SOS Button */}
         <div className="relative -top-6">
