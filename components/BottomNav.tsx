@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, ShieldAlert } from 'lucide-react';
+import { Home, MessageSquare, ShieldAlert } from 'lucide-react';
 
 const BottomNav = () => {
   return (
@@ -31,8 +31,13 @@ const BottomNav = () => {
           </button>
         </div>
 
-        {/* Empty space to balance the layout */}
-        <div className="w-8" />
+        {/* Suhbatlar */}
+        <button className="flex flex-col items-center gap-1 text-[#8E949A] hover:text-[#2D3A5D] transition-colors">
+          <div className="w-8 h-8 flex items-center justify-center mb-0.5">
+            <MessageSquare size={20} />
+          </div>
+          <span className="text-[10px] font-bold">Suhbatlar</span>
+        </button>
       </div>
     </div>
   );
