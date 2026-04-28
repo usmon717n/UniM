@@ -33,12 +33,12 @@ const BottomNav = () => {
         </div>
 
         {/* Suhbatlar */}
-        <button className="flex flex-col items-center gap-1 text-[#8E949A] hover:text-[#2D3A5D] transition-colors">
+        <Link href="/suhbatlar" className="flex flex-col items-center gap-1 text-[#8E949A] hover:text-[#2D3A5D] transition-colors">
           <div className="w-8 h-8 flex items-center justify-center mb-0.5">
             <MessageSquare size={20} />
           </div>
           <span className="text-[10px] font-bold">Suhbatlar</span>
-        </button>
+        </Link>
       </div>
     </div>
   );
