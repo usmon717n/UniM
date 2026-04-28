@@ -111,6 +111,14 @@ const MenuGrid = () => {
           );
         }
 
+        if (item.title === 'Mahsulot') {
+          return (
+            <Link key={index} href="/mahsulot" className="w-full h-full">
+              {CardContent}
+            </Link>
+          );
+        }
+
         return (
           <div key={index} className="w-full h-full">
             {CardContent}
