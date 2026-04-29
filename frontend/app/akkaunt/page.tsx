@@ -1,14 +1,18 @@
+'use client';
+
 import React from 'react';
-import { 
-  FileText, 
-  Heart, 
-  CreditCard, 
-  Shield, 
-  File, 
-  Fingerprint, 
-  KeyRound, 
-  Smartphone, 
-  Watch 
+import { useRouter } from 'next/navigation';
+import {
+  FileText,
+  Heart,
+  CreditCard,
+  Shield,
+  File,
+  Fingerprint,
+  KeyRound,
+  Smartphone,
+  Watch,
+  LogOut,
 } from 'lucide-react';
 import SubPageHeader from '@/components/SubPageHeader';
 import ProfileCard from '@/components/ProfileCard';
@@ -18,8 +22,24 @@ import DocumentItem from '@/components/DocumentItem';
 import PaymentCard from '@/components/PaymentCard';
 import SecurityItem from '@/components/SecurityItem';
 import BottomNav from '@/components/BottomNav';
+import { useAuth } from '@/lib/contexts/auth-context';
 
 export default function AkkauntPage() {
+  const router = useRouter();
+  const { user, isLoading, clearAuth } = useAuth();
+
+  function handleLogout() {
+    clearAuth();
+    router.push('/login');
+  }
+
+  if (isLoading) {
+    return (
+      <main className="min-h-screen bg-[#F4F6F9] flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+      </main>
+    );
+  }
   const documents = [
     { title: 'Pasport', subtitle: 'Hujjat • 2024-01-15', icon: FileText, iconBg: 'bg-blue-50', iconColor: 'text-blue-500' },
     { title: 'Tibbiy karta', subtitle: 'Tibbiyot • 2024-03-20', icon: Heart, iconBg: 'bg-rose-50', iconColor: 'text-rose-500' },
@@ -47,7 +67,7 @@ export default function AkkauntPage() {
         <SubPageHeader />
 
         {/* Profile */}
-        <ProfileCard />
+        <ProfileCard name={user?.name ?? ''} email={user?.email ?? ''} />
 
         {/* UniM Pass */}
         <UnimPassCard />
@@ -84,7 +104,7 @@ export default function AkkauntPage() {
         </div>
 
         {/* Security Section */}
-        <div className="px-5 mb-12">
+        <div className="px-5 mb-6">
           <h2 className="text-[#8E949A] text-[10px] font-black tracking-[0.1em] uppercase mb-4 px-1">
             XAVFSIZLIK
           </h2>
@@ -93,6 +113,18 @@ export default function AkkauntPage() {
               <SecurityItem key={idx} {...item} />
             ))}
           </div>
+        </div>
+
+        {/* Logout */}
+        <div className="px-5 mb-12">
+          <button
+            onClick={handleLogout}
+            className="w-full bg-white border border-red-100 rounded-[24px] py-4 flex items-center justify-center gap-3
+              text-red-500 text-sm font-bold hover:bg-red-50 active:scale-[0.99] transition-all shadow-sm"
+          >
+            <LogOut size={18} />
+            Hisobdan chiqish
+          </button>
         </div>
 
         {/* Bottom Navigation */}

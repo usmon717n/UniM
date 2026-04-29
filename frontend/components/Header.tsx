@@ -1,21 +1,28 @@
+'use client';
+
 import React from 'react';
 import { ShoppingCart, Bell, MessageSquare } from 'lucide-react';
 import Link from 'next/link';
+import { useAuth } from '@/lib/contexts/auth-context';
 
 const Header = () => {
+  const { user } = useAuth();
+  const firstName = user?.name?.split(' ')[0] ?? 'Mehmon';
+  const initials = user?.name
+    ? user.name.split(' ').map((w) => w[0]).join('').toUpperCase().slice(0, 2)
+    : '👤';
+
   return (
     <header className="flex items-center justify-between px-5 pt-6 pb-4">
       <div className="flex items-center gap-3">
-        {/* Avatar with Gradient */}
+        {/* Avatar */}
         <div className="w-12 h-12 rounded-full bg-gradient-to-br from-teal-500 to-teal-700 flex items-center justify-center shadow-lg border-2 border-white overflow-hidden">
-          <div className="bg-white/20 w-full h-full flex items-center justify-center">
-             <span className="text-white text-xl font-bold">👤</span>
-          </div>
+          <span className="text-white text-sm font-bold">{initials}</span>
         </div>
-        
+
         <div className="flex flex-col">
           <h1 className="text-[#1A1C1E] text-lg font-bold leading-tight flex items-center gap-1">
-            👋 Salom, Aziz!
+            👋 Salom, {firstName}!
           </h1>
           <p className="text-[#8E949A] text-xs font-medium">
             UniM: Shu yerda va Hozir.
