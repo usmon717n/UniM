@@ -185,16 +185,12 @@ const Header = () => {
                 className="w-10 h-10 rounded-2xl flex items-center justify-center text-[#5C6166] relative hover:bg-white hover:text-teal-600 transition-all duration-300 group"
                 title="Savat"
               >
-                <motion.div whileHover={{ rotate: 12, scale: 1.15 }} whileTap={{ scale: 0.9 }}>
+                <motion.div whileHover={{ rotate: 12, scale: 1.15 }} whileTap={{ scale: 0.9 }} className="relative">
                   <ShoppingCart strokeWidth={2.2} size={20} />
+                  <span className="absolute -top-1.5 -right-1.5 min-w-[14px] h-[14px] px-[3px] bg-[#FF3B30] text-white text-[8px] font-black rounded-full flex items-center justify-center border border-white shadow-sm leading-none">
+                    3
+                  </span>
                 </motion.div>
-                <motion.span 
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ repeat: Infinity, duration: 2 }}
-                  className="absolute top-2 right-2 min-w-[16px] h-4 px-1 bg-[#FF3B30] text-white text-[9px] font-black rounded-full flex items-center justify-center border-2 border-white shadow-sm"
-                >
-                  3
-                </motion.span>
               </button>
             </div>
           </div>

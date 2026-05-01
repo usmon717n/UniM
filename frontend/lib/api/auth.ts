@@ -19,17 +19,27 @@ export interface ApiError {
 }
 
 async function request<T>(path: string, options: RequestInit): Promise<T> {
-  const res = await fetch(`${API_BASE}${path}`, {
-    ...options,
-    headers: { 'Content-Type': 'application/json', ...options.headers },
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${API_BASE}${path}`, {
+      ...options,
+      headers: { 'Content-Type': 'application/json', ...options.headers },
+    });
+  } catch {
+    throw new Error('Server bilan bog\'lanib bo\'lmadi');
+  }
 
-  const data = await res.json();
+  const contentType = res.headers.get('content-type') ?? '';
+  const isJson = contentType.includes('application/json');
+  const data = isJson ? await res.json() : null;
 
   if (!res.ok) {
-    const err = data as ApiError;
-    const message = Array.isArray(err.message) ? err.message[0] : err.message;
-    throw new Error(message ?? 'Xatolik yuz berdi');
+    if (isJson && data) {
+      const err = data as ApiError;
+      const message = Array.isArray(err.message) ? err.message[0] : err.message;
+      throw new Error(message ?? 'Xatolik yuz berdi');
+    }
+    throw new Error(`Server xatosi: ${res.status}`);
   }
 
   return data as T;
