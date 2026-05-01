@@ -5,7 +5,7 @@ import { QrCode, ShieldCheck, Eye, EyeOff, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
-const UnimPassCard = () => {
+const AvimedPassCard = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   return (
@@ -29,7 +29,7 @@ const UnimPassCard = () => {
             <div className="p-2 bg-teal-50 rounded-xl">
               <QrCode size={18} className="text-teal-600" />
             </div>
-            <span className="text-base font-black tracking-tight">UniM Pass</span>
+            <span className="text-base font-black tracking-tight">Avimed Pass</span>
           </div>
           <div className="flex items-center gap-1.5 bg-emerald-50 text-emerald-600 px-3 py-1.5 rounded-full border border-emerald-100/50">
             <ShieldCheck size={12} strokeWidth={3} />
@@ -109,5 +109,4 @@ const UnimPassCard = () => {
   );
 };
 
-export default UnimPassCard;
-
+export default AvimedPassCard;

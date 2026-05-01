@@ -4,6 +4,7 @@ import "./globals.css";
 import { AuthProvider } from "@/lib/contexts/auth-context";
 import { AuthModalProvider } from "@/lib/contexts/auth-modal-context";
 import { AuthModal } from "@/components/AuthModal";
+import SwipeNavigation from "@/components/SwipeNavigation";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -11,8 +12,12 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "UniM - Shu yerda va Hozir",
+  title: "Avimed - Shu yerda va Hozir",
   description: "Barcha xizmatlar bir joyda",
+  icons: {
+    icon: "/icon.png",
+    apple: "/apple-icon.png",
+  },
 };
 
 export default function RootLayout({
@@ -25,7 +30,9 @@ export default function RootLayout({
       <body className="font-sans">
         <AuthProvider>
           <AuthModalProvider>
-            {children}
+            <SwipeNavigation>
+              {children}
+            </SwipeNavigation>
             <AuthModal />
           </AuthModalProvider>
         </AuthProvider>

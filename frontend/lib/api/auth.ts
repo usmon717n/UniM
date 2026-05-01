@@ -2,8 +2,9 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001/api';
 
 export interface AuthUser {
   id: string;
-  name: string;
-  email: string;
+  name: string | null;
+  email: string | null;
+  phoneNumber: string | null;
   createdAt: string;
 }
 
@@ -46,8 +47,9 @@ async function request<T>(path: string, options: RequestInit): Promise<T> {
 }
 
 export async function apiRegister(payload: {
-  name: string;
-  email: string;
+  name?: string;
+  email?: string;
+  phoneNumber?: string;
   password: string;
 }): Promise<AuthResponse> {
   return request<AuthResponse>('/auth/register', {
@@ -57,7 +59,7 @@ export async function apiRegister(payload: {
 }
 
 export async function apiLogin(payload: {
-  email: string;
+  identifier: string;
   password: string;
 }): Promise<AuthResponse> {
   return request<AuthResponse>('/auth/login', {

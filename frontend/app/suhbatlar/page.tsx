@@ -1,5 +1,5 @@
 import React from 'react';
-import { Bot, Heart } from 'lucide-react';
+import { Bot, Dumbbell, Heart, Hospital, Pill, Stethoscope } from 'lucide-react';
 import SubPageHeader from '@/components/SubPageHeader';
 import SearchBox from '@/components/SearchBox';
 import ChatCard from '@/components/ChatCard';
@@ -26,7 +26,7 @@ export default function SuhbatlarPage() {
             QADOQLANGAN
           </h2>
           <ChatCard 
-            title="UniM AI"
+            title="Avimed AI"
             message="Salom! Qanday yordam bera olaman?"
             time="Hozir"
             unreadCount={1}
@@ -60,13 +60,15 @@ export default function SuhbatlarPage() {
             message="Analiz natijalaringiz tayyor."
             time="14:32"
             unreadCount={2}
-            icon="👨‍⚕️"
+            icon={<Stethoscope size={26} strokeWidth={2.2} className="text-sky-600" />}
+            iconBg="bg-sky-50"
           />
           <ChatCard 
             title="Dr. Karimova Nodira"
             message="Keyingi qabul 25-fevralda."
             time="Kecha"
-            icon="👩‍⚕️"
+            icon={<Stethoscope size={26} strokeWidth={2.2} className="text-teal-600" />}
+            iconBg="bg-teal-50"
           />
         </div>
 
@@ -79,7 +81,8 @@ export default function SuhbatlarPage() {
             title="City Med Center"
             message="Qabulga yozildingiz: 20-fevral, 10:00"
             time="18-fev"
-            icon="🏥"
+            icon={<Hospital size={26} strokeWidth={2.2} className="text-rose-600" />}
+            iconBg="bg-rose-50"
           />
         </div>
 
@@ -92,7 +95,8 @@ export default function SuhbatlarPage() {
             title="FitCity Trainer"
             message="Ertangi mashg'ulot soat 7:00 da"
             time="Kecha"
-            icon="🏋️"
+            icon={<Dumbbell size={26} strokeWidth={2.2} className="text-orange-600" />}
+            iconBg="bg-orange-50"
           />
         </div>
 
@@ -105,7 +109,8 @@ export default function SuhbatlarPage() {
             title="UniPharm Do'xona"
             message="Buyurtmangiz tayyor. Olib ketishingiz mumkin."
             time="17-fev"
-            icon="💊"
+            icon={<Pill size={26} strokeWidth={2.2} className="text-emerald-600" />}
+            iconBg="bg-emerald-50"
           />
         </div>
 

@@ -21,7 +21,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import SubPageHeader from '@/components/SubPageHeader';
 import ProfileCard from '@/components/ProfileCard';
-import UnimPassCard from '@/components/UnimPassCard';
+import AvimedPassCard from '@/components/AvimedPassCard';
 import MemoryCard from '@/components/MemoryCard';
 import DocumentItem from '@/components/DocumentItem';
 import PaymentCard from '@/components/PaymentCard';
@@ -106,7 +106,7 @@ export default function AkkauntPage() {
           
           {/* Left Column: ID & Stats */}
           <div className="lg:col-span-5 flex flex-col">
-            <UnimPassCard />
+            <AvimedPassCard />
             <MemoryCard />
           </div>
 
@@ -233,4 +233,3 @@ export default function AkkauntPage() {
     </main>
   );
 }
-

@@ -1,18 +1,20 @@
 'use client';
 
-import { ShoppingCart, Bell, MessageSquare, ChevronDown, Check, Globe, User } from 'lucide-react';
+import { ShoppingCart, MessageSquare, ChevronDown, Check, Hand } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/lib/contexts/auth-context';
 import { useAuthModal } from '@/lib/contexts/auth-modal-context';
 import { cn } from '@/lib/utils';
+import BrandLogo from '@/components/BrandLogo';
+import LanguageFlag from '@/components/LanguageFlag';
 
 const languages = [
-  { code: 'uz', name: "O'zbekcha", flag: '🇺🇿' },
-  { code: 'ru', name: 'Русский', flag: '🇷🇺' },
-  { code: 'en', name: 'English', flag: '🇺🇸' },
-];
+  { code: 'uz', name: "O'zbekcha" },
+  { code: 'ru', name: 'Русский' },
+  { code: 'en', name: 'English' },
+] as const;
 
 const Header = () => {
   const { user } = useAuth();
@@ -41,11 +43,7 @@ const Header = () => {
     router.push(href);
   }
 
-  const firstName = user?.name?.split(' ')[0] ?? 'Usmon';
-  const initials = user?.name
-    ? user.name.split(' ').map((w) => w[0]).join('').toUpperCase().slice(0, 2)
-    : '';
-
+  const firstName = user?.name?.split(' ')[0] ?? 'Mehmon';
   const currentLang = languages.find(l => l.code === lang) || languages[0];
 
   return (
@@ -63,28 +61,17 @@ const Header = () => {
         
         {/* Left Side: Avatar & Greeting */}
         <div className="flex items-center gap-3 sm:gap-4">
-          {/* Premium Avatar */}
+          {/* Brand Logo */}
           <motion.div 
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ type: "spring", stiffness: 260, damping: 20 }}
             className="relative group cursor-pointer"
           >
-            <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white p-0.5 shadow-sm border border-gray-100">
-              <div className="w-full h-full rounded-full bg-gradient-to-br from-teal-500 via-blue-500 to-emerald-600 flex items-center justify-center overflow-hidden relative">
-                {initials ? (
-                  <span className="text-white text-sm sm:text-base font-black tracking-tight">{initials}</span>
-                ) : (
-                  <User size={24} className="text-white/90" />
-                )}
-                {/* Shine Animation */}
-                <motion.div 
-                  animate={{ x: ['-100%', '200%'] }}
-                  transition={{ repeat: Infinity, duration: 3, ease: "linear", repeatDelay: 4 }}
-                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-[45deg]"
-                />
-              </div>
-            </div>
+            <BrandLogo
+              priority
+              className="w-12 h-12 sm:w-14 sm:h-14 rounded-full p-1.5 shadow-sm border border-gray-100"
+            />
             {/* Online Pulse Indicator */}
             <motion.div 
               animate={{ opacity: [0.5, 1, 0.5], scale: [1, 1.2, 1] }}
@@ -103,7 +90,9 @@ const Header = () => {
               <h1 className="text-lg sm:text-xl font-black tracking-tight text-[#1A1C1E]">
                 Salom, <span className="bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent">{firstName}!</span>
               </h1>
-              <span className="text-xl animate-bounce-subtle">👋</span>
+              <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-teal-50 text-teal-600 ring-1 ring-teal-100 transition-colors duration-300 group-hover:bg-teal-100">
+                <Hand size={17} strokeWidth={2.2} />
+              </span>
             </motion.div>
             <motion.p 
               initial={{ x: -20, opacity: 0 }}
@@ -111,7 +100,7 @@ const Header = () => {
               transition={{ delay: 0.3 }}
               className="text-[#8E949A] text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] mt-0.5"
             >
-              UNIM: Shu yerda va hozir
+              AVIMED: Shu yerda va hozir
             </motion.p>
           </div>
         </div>
@@ -132,7 +121,7 @@ const Header = () => {
                 onClick={() => setIsLangOpen(!isLangOpen)}
                 className="flex items-center gap-2 px-3 py-2 rounded-2xl hover:bg-white/80 transition-all duration-300 group"
               >
-                <span className="text-base sm:text-lg leading-none transform group-hover:scale-110 transition-transform">{currentLang.flag}</span>
+                <LanguageFlag code={currentLang.code} className="h-[18px] w-[26px] rounded-md shadow-sm ring-1 ring-black/5 transition-transform duration-300 group-hover:scale-105" />
                 <span className="text-[12px] font-black text-[#1A1C1E] uppercase tracking-tighter">{currentLang.code}</span>
                 <ChevronDown size={12} className={cn("text-gray-400 transition-transform duration-300", isLangOpen && "rotate-180")} />
               </button>
@@ -152,7 +141,7 @@ const Header = () => {
                         className="w-full flex items-center justify-between px-4 py-3 hover:bg-teal-50 transition-colors group"
                       >
                         <div className="flex items-center gap-3">
-                          <span className="text-xl">{l.flag}</span>
+                          <LanguageFlag code={l.code} className="h-[18px] w-[26px] rounded-md shadow-sm ring-1 ring-black/5" />
                           <span className={cn("text-[13px] font-bold", lang === l.code ? "text-teal-600" : "text-gray-600")}>
                             {l.name}
                           </span>
@@ -176,7 +165,7 @@ const Header = () => {
                 title="Xabarlar"
               >
                 <motion.div whileHover={{ y: -2, scale: 1.15 }} whileTap={{ scale: 0.9 }}>
-                  <MessageSquare strokeWidth={2.2} size={20} />
+                  <MessageSquare strokeWidth={2.2} size={22} />
                 </motion.div>
               </button>
               
@@ -186,8 +175,8 @@ const Header = () => {
                 title="Savat"
               >
                 <motion.div whileHover={{ rotate: 12, scale: 1.15 }} whileTap={{ scale: 0.9 }} className="relative">
-                  <ShoppingCart strokeWidth={2.2} size={20} />
-                  <span className="absolute -top-1.5 -right-1.5 min-w-[14px] h-[14px] px-[3px] bg-[#FF3B30] text-white text-[8px] font-black rounded-full flex items-center justify-center border border-white shadow-sm leading-none">
+                  <ShoppingCart strokeWidth={2.2} size={22} />
+                  <span className="absolute -top-2 -right-2 flex h-[17px] min-w-[17px] items-center justify-center rounded-full border-2 border-white bg-red-500 px-1 text-[9px] font-black leading-none text-white shadow-[0_4px_10px_rgba(239,68,68,0.35)]">
                     3
                   </span>
                 </motion.div>
@@ -196,22 +185,8 @@ const Header = () => {
           </div>
         </motion.div>
       </div>
-
-      <style jsx global>{`
-        @keyframes bounce-subtle {
-          0%, 100% { transform: translateY(0) rotate(0); }
-          50% { transform: translateY(-3px) rotate(8deg); }
-        }
-        .animate-bounce-subtle {
-          animation: bounce-subtle 2s ease-in-out infinite;
-        }
-      `}</style>
     </header>
   );
 };
 
 export default Header;
-
-
-
-

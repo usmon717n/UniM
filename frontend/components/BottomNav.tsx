@@ -1,58 +1,113 @@
 'use client';
 
-import { Home, MessageSquare, ShieldAlert } from 'lucide-react';
+import React from 'react';
+import { Home, MessageSquare, ShieldAlert, UserCog, ShoppingBag, User } from 'lucide-react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/lib/contexts/auth-context';
-import { useAuthModal } from '@/lib/contexts/auth-modal-context';
+import { useRouter, usePathname } from 'next/navigation';
+import { motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 const BottomNav = () => {
-  const { user } = useAuth();
-  const { openModal } = useAuthModal();
-  const router = useRouter();
+  const pathname = usePathname();
 
-  function goToSuhbatlar() {
-    if (!user) { openModal('/suhbatlar'); return; }
-    router.push('/suhbatlar');
-  }
+  const navItems = [
+    { name: 'Asosiy', icon: Home, path: '/' },
+    { name: 'Xizmat', icon: UserCog, path: '/mutaxassis' },
+    { name: 'Market', icon: ShoppingBag, path: '/mahsulot' },
+    { name: 'Profil', icon: User, path: '/akkaunt' }
+  ];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 flex justify-center md:hidden">
-      <div className="w-full max-w-[1100px] bg-white/80 backdrop-blur-xl border-t border-gray-100 px-8 py-3 flex items-center justify-between pb-6">
-        {/* Bosh sahifa */}
-        <Link href="/" className="flex flex-col items-center gap-1 text-[#2D3A5D]">
-          <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center mb-0.5">
-            <Home size={20} />
-          </div>
-          <span className="text-[10px] font-bold">Bosh sahifa</span>
-        </Link>
-
-        {/* SOS Button */}
-        <div className="relative -top-6">
-          <button className="relative group">
-            <div className="absolute -inset-2 bg-red-500/20 rounded-full blur-xl group-hover:bg-red-500/30 transition-all" />
-            <div className="relative w-16 h-16 bg-[#FF3B30] rounded-full border-[6px] border-white flex items-center justify-center text-white shadow-xl group-active:scale-95 transition-transform">
-              <ShieldAlert size={32} />
-            </div>
-            <div className="absolute -bottom-6 left-1/2 -translate-x-1/2">
-              <span className="text-[#FF3B30] text-[11px] font-black tracking-wider uppercase">SOS</span>
-            </div>
-          </button>
+    <div className="fixed bottom-6 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none md:hidden">
+      <motion.div 
+        initial={{ y: 100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ type: "spring", stiffness: 260, damping: 20 }}
+        className="w-full max-w-[440px] h-[76px] bg-white/70 backdrop-blur-[24px] border border-white/40 rounded-[36px] shadow-[0_15px_50px_rgba(0,0,0,0.12)] flex items-center justify-between px-2 pointer-events-auto relative"
+      >
+        {/* Left Side Items */}
+        <div className="flex flex-1 justify-around items-center h-full">
+          {navItems.slice(0, 2).map((item) => {
+            const isActive = pathname === item.path;
+            const Icon = item.icon;
+            return (
+              <Link key={item.path} href={item.path} className="flex flex-col items-center justify-center gap-1 flex-1">
+                <motion.div 
+                  whileTap={{ scale: 0.9 }}
+                  className={cn(
+                    "p-2.5 rounded-[18px] transition-all duration-300",
+                    isActive ? "text-teal-600 bg-teal-50/60 shadow-sm" : "text-gray-400 hover:text-gray-600"
+                  )}
+                >
+                  <Icon size={20} strokeWidth={isActive ? 2.5 : 2} />
+                </motion.div>
+                <span className={cn(
+                  "text-[8px] font-black uppercase tracking-widest transition-colors",
+                  isActive ? "text-teal-600" : "text-gray-400"
+                )}>
+                  {item.name}
+                </span>
+              </Link>
+            );
+          })}
         </div>
 
-        {/* Suhbatlar */}
-        <button
-          onClick={goToSuhbatlar}
-          className="flex flex-col items-center gap-1 text-[#8E949A] hover:text-[#2D3A5D] transition-colors"
-        >
-          <div className="w-8 h-8 flex items-center justify-center mb-0.5">
-            <MessageSquare size={20} />
-          </div>
-          <span className="text-[10px] font-bold">Suhbatlar</span>
-        </button>
-      </div>
+        {/* SOS Center Button */}
+        <div className="w-20 relative flex justify-center">
+          <motion.button 
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.9 }}
+            className="absolute -top-14"
+          >
+            <motion.div 
+              animate={{ scale: [1, 1.3, 1], opacity: [0.2, 0, 0.2] }}
+              transition={{ repeat: Infinity, duration: 2.5 }}
+              className="absolute inset-0 bg-red-500 rounded-full blur-xl"
+            />
+            
+            <div className="relative w-20 h-20 bg-gradient-to-br from-[#FF4D4D] via-[#FF3B30] to-[#D70000] rounded-full border-[6px] border-white/90 shadow-[0_12px_40px_rgba(255,59,48,0.45)] flex flex-col items-center justify-center text-white overflow-hidden">
+              <ShieldAlert size={30} strokeWidth={2.5} />
+              <span className="text-[9px] font-black uppercase tracking-[0.2em] mt-0.5">SOS</span>
+              
+              <motion.div 
+                animate={{ x: ['-100%', '200%'] }}
+                transition={{ repeat: Infinity, duration: 4, ease: "linear", repeatDelay: 3 }}
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent skew-x-[45deg]"
+              />
+            </div>
+          </motion.button>
+        </div>
+
+        {/* Right Side Items */}
+        <div className="flex flex-1 justify-around items-center h-full">
+          {navItems.slice(2, 4).map((item) => {
+            const isActive = pathname === item.path;
+            const Icon = item.icon;
+            return (
+              <Link key={item.path} href={item.path} className="flex flex-col items-center justify-center gap-1 flex-1">
+                <motion.div 
+                  whileTap={{ scale: 0.9 }}
+                  className={cn(
+                    "p-2.5 rounded-[18px] transition-all duration-300",
+                    isActive ? "text-teal-600 bg-teal-50/60 shadow-sm" : "text-gray-400 hover:text-gray-600"
+                  )}
+                >
+                  <Icon size={20} strokeWidth={isActive ? 2.5 : 2} />
+                </motion.div>
+                <span className={cn(
+                  "text-[8px] font-black uppercase tracking-widest transition-colors",
+                  isActive ? "text-teal-600" : "text-gray-400"
+                )}>
+                  {item.name}
+                </span>
+              </Link>
+            );
+          })}
+        </div>
+      </motion.div>
     </div>
   );
 };
 
 export default BottomNav;
+

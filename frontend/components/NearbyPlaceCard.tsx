@@ -1,24 +1,29 @@
 import React from 'react';
-import { MapPin } from 'lucide-react';
+import { MapPin, type LucideIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface NearbyPlaceCardProps {
   title: string;
   subtitle: string;
   distance: string;
-  emoji: string;
+  icon: LucideIcon;
+  iconBg?: string;
+  iconColor?: string;
 }
 
 const NearbyPlaceCard = ({
   title,
   subtitle,
   distance,
-  emoji
+  icon: Icon,
+  iconBg = 'bg-gray-50',
+  iconColor = 'text-gray-500'
 }: NearbyPlaceCardProps) => {
   return (
     <div className="bg-white rounded-3xl p-4 shadow-sm border border-gray-50 flex items-center justify-between mb-3">
       <div className="flex items-center gap-4">
-        <div className="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center text-2xl shadow-inner">
-          {emoji}
+        <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center shadow-inner", iconBg)}>
+          <Icon size={24} strokeWidth={2.2} className={iconColor} />
         </div>
         <div className="flex flex-col">
           <span className="text-[#1A1C1E] text-[15px] font-bold">{title}</span>

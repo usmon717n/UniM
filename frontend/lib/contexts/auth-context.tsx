@@ -23,8 +23,8 @@ interface AuthContextValue extends AuthState {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-const TOKEN_KEY = 'unim_token';
-const USER_KEY = 'unim_user';
+const TOKEN_KEY = 'avimed_token';
+const USER_KEY = 'avimed_user';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<AuthState>({
@@ -40,7 +40,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (token && userJson) {
         setState({ token, user: JSON.parse(userJson), isLoading: false });
         // Sync to cookie so middleware can read it
-        document.cookie = `unim_token=${token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax`;
+        document.cookie = `avimed_token=${token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax`;
         return;
       }
     } catch {
@@ -52,14 +52,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const setAuth = useCallback((token: string, user: AuthUser) => {
     localStorage.setItem(TOKEN_KEY, token);
     localStorage.setItem(USER_KEY, JSON.stringify(user));
-    document.cookie = `unim_token=${token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax`;
+    document.cookie = `avimed_token=${token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax`;
     setState({ token, user, isLoading: false });
   }, []);
 
   const clearAuth = useCallback(() => {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
-    document.cookie = 'unim_token=; path=/; max-age=0';
+    document.cookie = 'avimed_token=; path=/; max-age=0';
     setState({ token: null, user: null, isLoading: false });
   }, []);
 

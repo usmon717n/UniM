@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Sparkles, Search, Loader2, Command } from 'lucide-react';
+import { Sparkles, Search, Loader2, Command, Home, Wrench, Stethoscope, Scale } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/lib/contexts/auth-context';
 import { useAuthModal } from '@/lib/contexts/auth-modal-context';
@@ -13,6 +13,13 @@ const suggestions = [
   "Uy ijarasi...",
   "Yaqin atrofdagi dorixonalar...",
   "Ta'mir xizmatlari..."
+];
+
+const quickSuggestions = [
+  { label: 'Ijaraga uy', icon: Home },
+  { label: 'Usta kerak', icon: Wrench },
+  { label: 'Shifokor', icon: Stethoscope },
+  { label: 'Huquqiy yordam', icon: Scale },
 ];
 
 const AiSearch = () => {
@@ -121,7 +128,7 @@ const AiSearch = () => {
                   className="absolute inset-0 flex items-center px-4 pointer-events-none"
                 >
                   <span className="text-gray-400 text-[15px] font-medium">
-                    UniM AI'dan so'rang: <span className="text-teal-600/60 italic">{suggestions[suggestionIndex]}</span>
+                    Avimed AI'dan so'rang: <span className="text-teal-600/60 italic">{suggestions[suggestionIndex]}</span>
                   </span>
                 </motion.div>
               )}
@@ -151,7 +158,7 @@ const AiSearch = () => {
                 <Loader2 size={18} className="animate-spin" />
               ) : (
                 <>
-                  <span className="hidden sm:inline text-[13px] font-bold">UniM AI</span>
+                  <span className="hidden sm:inline text-[13px] font-bold">Avimed AI</span>
                   <motion.div
                     animate={{ rotate: [0, 15, -15, 0] }}
                     transition={{ repeat: Infinity, duration: 2 }}
@@ -178,12 +185,13 @@ const AiSearch = () => {
         transition={{ delay: 0.8 }}
         className="mt-4 flex flex-wrap justify-center gap-2"
       >
-        {["🏠 Ijaraga uy", "🔧 Usta kerak", "🏥 Shifokor", "📜 Huquqiy yordam"].map((tag) => (
+        {quickSuggestions.map(({ label, icon: Icon }) => (
           <button 
-            key={tag}
-            className="text-[11px] font-bold text-gray-400 bg-white/40 hover:bg-white hover:text-teal-600 px-3 py-1.5 rounded-full border border-white/60 transition-all duration-300"
+            key={label}
+            className="inline-flex items-center gap-1.5 text-[11px] font-bold text-gray-400 bg-white/40 hover:bg-white hover:text-teal-600 px-3 py-1.5 rounded-full border border-white/60 transition-all duration-300"
           >
-            {tag}
+            <Icon size={13} strokeWidth={2.2} />
+            {label}
           </button>
         ))}
       </motion.div>
@@ -192,4 +200,3 @@ const AiSearch = () => {
 };
 
 export default AiSearch;
-

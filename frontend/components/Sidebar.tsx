@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/lib/contexts/auth-context';
 import { useAuthModal } from '@/lib/contexts/auth-modal-context';
+import BrandLogo from '@/components/BrandLogo';
 
 const navItems = [
   { label: 'Dashboard', icon: LayoutDashboard, href: '/', protected: false },
@@ -44,11 +45,9 @@ export default function Sidebar() {
       {/* Logo */}
       <div className="h-16 px-5 flex items-center border-b border-gray-100 shrink-0">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 bg-gradient-to-br from-teal-400 to-emerald-600 rounded-xl flex items-center justify-center shadow-md shadow-teal-200/60">
-            <span className="text-white font-black text-base leading-none">U</span>
-          </div>
+          <BrandLogo className="w-9 h-9 rounded-xl p-1 shadow-md shadow-teal-200/60 border border-gray-100" />
           <div className="leading-tight">
-            <p className="text-[#1A1A1A] font-black text-xl tracking-tight leading-none">UniM</p>
+            <p className="text-[#1A1A1A] font-black text-xl tracking-tight leading-none">Avimed</p>
             <p className="text-[9px] text-gray-400 font-semibold uppercase tracking-widest mt-0.5">
               Health Platform
             </p>

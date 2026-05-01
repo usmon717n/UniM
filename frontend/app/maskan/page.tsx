@@ -8,7 +8,11 @@ import {
   Lightbulb, 
   Thermometer, 
   Lock, 
-  Shield 
+  Shield,
+  Hospital,
+  Pill,
+  Dumbbell,
+  TreePine
 } from 'lucide-react';
 import SubPageHeader from '@/components/SubPageHeader';
 import SectionTitle from '@/components/SectionTitle';
@@ -125,25 +129,33 @@ export default function MaskanPage() {
               title="City Med Center"
               subtitle="Klinika"
               distance="0.3"
-              emoji="🏥"
+              icon={Hospital}
+              iconBg="bg-rose-50"
+              iconColor="text-rose-500"
             />
             <NearbyPlaceCard 
               title="Grand Pharma"
               subtitle="Dorixona"
               distance="0.5"
-              emoji="💊"
+              icon={Pill}
+              iconBg="bg-emerald-50"
+              iconColor="text-emerald-500"
             />
             <NearbyPlaceCard 
               title="FitZone Gym"
               subtitle="Sport zali"
               distance="0.8"
-              emoji="🏋️"
+              icon={Dumbbell}
+              iconBg="bg-orange-50"
+              iconColor="text-orange-500"
             />
             <NearbyPlaceCard 
               title="Oasis Park"
               subtitle="Park"
               distance="1.2"
-              emoji="🌳"
+              icon={TreePine}
+              iconBg="bg-lime-50"
+              iconColor="text-lime-600"
             />
           </div>
         </div>

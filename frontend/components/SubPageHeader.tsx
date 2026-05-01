@@ -4,6 +4,7 @@ import React from 'react';
 import { ChevronLeft, Sparkles, Globe } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import BrandLogo from '@/components/BrandLogo';
 
 const SubPageHeader = () => {
   return (
@@ -40,17 +41,10 @@ const SubPageHeader = () => {
         >
           <div className="relative w-9 h-9">
             <div className="absolute inset-0 bg-gradient-to-br from-teal-500 to-blue-600 rounded-full blur-sm opacity-20" />
-            <div className="relative w-full h-full rounded-full bg-gradient-to-br from-[#1A1C1E] to-[#2D3A5D] flex items-center justify-center text-white shadow-lg overflow-hidden group">
-              <span className="text-sm font-black tracking-tighter">U</span>
-              <motion.div 
-                animate={{ x: ['-100%', '200%'] }}
-                transition={{ repeat: Infinity, duration: 3, ease: "linear", repeatDelay: 5 }}
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-[45deg]"
-              />
-            </div>
+            <BrandLogo className="relative w-full h-full rounded-full p-1 shadow-lg border border-white" />
           </div>
           <div className="flex flex-col">
-            <span className="text-[#1A1C1E] text-lg font-black tracking-tighter leading-none">UniM</span>
+            <span className="text-[#1A1C1E] text-lg font-black tracking-tighter leading-none">Avimed</span>
             <span className="text-[9px] font-black uppercase tracking-[0.2em] text-teal-600 mt-0.5">Personal Hub</span>
           </div>
         </motion.div>
@@ -72,4 +66,3 @@ const SubPageHeader = () => {
 };
 
 export default SubPageHeader;
-
