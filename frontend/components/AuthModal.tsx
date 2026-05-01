@@ -24,6 +24,17 @@ function looksLikePhone(v: string): boolean {
   return PHONE_RE.test(normalizePhone(v.replace(/[\s\-\(\)]/g, '')));
 }
 
+function formatUzPhone(value: string): string {
+  const digits = value.replace(/\D/g, '').replace(/^998/, '').slice(0, 9);
+  const parts = [
+    digits.slice(0, 2),
+    digits.slice(2, 5),
+    digits.slice(5, 7),
+    digits.slice(7, 9),
+  ].filter(Boolean);
+  return parts.join(' ');
+}
+
 // ── Schemas ────────────────────────────────────────────────────────────────
 
 const loginSchema = z.object({
@@ -414,27 +425,33 @@ export function AuthModal() {
                 </div>
               ) : (
                 <div className="group">
-                  <div className="relative">
-                    <Phone
-                      size={16}
-                      className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-teal-500 transition-colors"
-                    />
-                    {/* +998 prefix badge */}
-                    <span className="absolute left-10 top-1/2 -translate-y-1/2 text-sm font-semibold text-gray-500 pointer-events-none select-none">
-                      +998
-                    </span>
+                  <div
+                    className={`flex h-12 items-center overflow-hidden rounded-2xl border text-sm font-medium text-[#1A1A1A] transition-all duration-300 ${
+                      fieldErrors.phoneNumber
+                        ? 'border-red-200 bg-red-50/30 focus-within:border-red-400 focus-within:ring-4 focus-within:ring-red-500/10'
+                        : 'border-gray-100 bg-gray-50/50 focus-within:border-teal-500/50 focus-within:bg-white focus-within:ring-4 focus-within:ring-teal-500/10'
+                    }`}
+                  >
+                    <div className="flex h-full shrink-0 items-center gap-2 border-r border-gray-100 bg-white/70 px-4 text-gray-500">
+                      <Phone
+                        size={16}
+                        className="text-gray-300 transition-colors group-focus-within:text-teal-500"
+                      />
+                      <span className="font-bold text-slate-600">+998</span>
+                    </div>
                     <input
                       type="tel"
                       placeholder="90 123 45 67"
                       autoComplete="tel"
-                      value={registerValues.phoneNumber.replace(/^\+998/, '')}
+                      inputMode="numeric"
+                      value={formatUzPhone(registerValues.phoneNumber)}
                       onChange={(e) => {
-                        const digits = e.target.value.replace(/\D/g, '').slice(0, 9);
+                        const digits = e.target.value.replace(/\D/g, '').replace(/^998/, '').slice(0, 9);
                         setRegisterValues((v) => ({ ...v, phoneNumber: digits }));
                         clearError('phoneNumber');
                         setServerError('');
                       }}
-                      className={`${inputCls('phoneNumber')} pl-[4.5rem]`}
+                      className="h-full min-w-0 flex-1 bg-transparent px-4 text-sm font-semibold text-slate-900 outline-none placeholder:text-gray-400"
                     />
                   </div>
                   {fieldErrors.phoneNumber && (
