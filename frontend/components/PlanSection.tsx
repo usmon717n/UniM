@@ -42,6 +42,7 @@ const PlanSection = () => {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [newTitle, setNewTitle] = useState('');
   const [newTime, setNewTime] = useState('12:00');
+  const [newType, setNewType] = useState<PlanTaskType>('CUSTOM');
   const [isCreating, setIsCreating] = useState(false);
   const [createError, setCreateError] = useState<string | null>(null);
   const [isAllOpen, setIsAllOpen] = useState(false);
@@ -135,6 +136,7 @@ const PlanSection = () => {
   const handleAddTask = () => {
     setNewTitle('');
     setNewTime('12:00');
+    setNewType('CUSTOM');
     setError(null);
     setCreateError(null);
     setIsCreateOpen(true);
@@ -169,7 +171,7 @@ const PlanSection = () => {
       setCreateError(null);
       await apiCreatePlanTask(token, {
         title: newTitle.trim(),
-        type: 'CUSTOM',
+        type: newType,
         scheduledTime: newTime.trim(),
         date: new Date().toISOString().slice(0, 10),
         repeatType: 'NONE',
@@ -554,6 +556,47 @@ const PlanSection = () => {
                     className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 outline-none transition focus:border-teal-400 focus:ring-4 focus:ring-teal-100"
                   />
                 </label>
+
+                {/* Category/Icon Selector */}
+                <div className="space-y-2">
+                  <span className="block text-xs font-bold uppercase tracking-wider text-slate-500">Turkum / Icon</span>
+                  <div className="flex flex-wrap gap-2">
+                    {(Object.keys(TYPE_STYLES) as PlanTaskType[]).map((type) => {
+                      const style = TYPE_STYLES[type];
+                      const isSelected = newType === type;
+                      return (
+                        <motion.button
+                          key={type}
+                          type="button"
+                          whileTap={{ scale: 0.95 }}
+                          onClick={() => setNewType(type)}
+                          className={cn(
+                            "flex items-center gap-2 px-3 py-2 rounded-xl border transition-all duration-300",
+                            isSelected 
+                              ? "bg-white border-teal-500 shadow-md shadow-teal-500/10 ring-2 ring-teal-500/10" 
+                              : "bg-slate-50 border-slate-200 hover:border-slate-300"
+                          )}
+                        >
+                          <div className={cn(
+                            "w-7 h-7 rounded-lg flex items-center justify-center text-white bg-gradient-to-br",
+                            style.gradient
+                          )}>
+                            <style.icon size={16} />
+                          </div>
+                          <span className={cn(
+                            "text-[10px] font-black uppercase tracking-wider",
+                            isSelected ? "text-slate-900" : "text-slate-500"
+                          )}>
+                            {type === 'MEDICINE' ? 'Dori' : 
+                             type === 'WATER' ? 'Suv' : 
+                             type === 'SPORT' ? 'Sport' : 
+                             type === 'VITAMIN' ? 'Vitamin' : 'Boshqa'}
+                          </span>
+                        </motion.button>
+                      );
+                    })}
+                  </div>
+                </div>
 
                 <label className="block">
                   <span className="mb-1.5 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500">
