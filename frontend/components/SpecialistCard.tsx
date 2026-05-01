@@ -1,5 +1,8 @@
+'use client';
+
 import React from 'react';
-import { Star, ExternalLink } from 'lucide-react';
+import { Star, ExternalLink, LucideIcon, Sparkles } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 interface SpecialistCardProps {
@@ -7,8 +10,9 @@ interface SpecialistCardProps {
   description: string;
   rating: number;
   category: string;
-  icon: string;
+  icon: LucideIcon;
   gradient: string;
+  colorClass: string;
 }
 
 const SpecialistCard = ({
@@ -16,41 +20,68 @@ const SpecialistCard = ({
   description,
   rating,
   category,
-  icon,
-  gradient
+  icon: Icon,
+  gradient,
+  colorClass
 }: SpecialistCardProps) => {
   return (
-    <div className="bg-white rounded-[32px] p-5 shadow-sm border border-gray-50 flex items-center justify-between hover:shadow-md transition-shadow mb-4">
-      <div className="flex items-center gap-4 flex-1">
+    <motion.div 
+      whileHover={{ y: -6, scale: 1.01 }}
+      className="group bg-white/70 backdrop-blur-md rounded-[32px] p-5 shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-white hover:bg-white hover:shadow-xl transition-all duration-500 mb-5 relative overflow-hidden"
+    >
+      {/* Subtle Background Glow */}
+      <div className={cn("absolute -right-12 -top-12 w-32 h-32 blur-3xl opacity-0 group-hover:opacity-10 transition-opacity rounded-full", gradient)} />
+
+      <div className="flex flex-col sm:flex-row sm:items-center gap-5 flex-1 relative z-10">
+        {/* Premium Icon Container */}
         <div className={cn(
-          "w-14 h-14 rounded-2xl flex items-center justify-center text-3xl shadow-inner",
-          gradient
+          "w-16 h-16 rounded-[24px] flex items-center justify-center shadow-sm group-hover:shadow-lg group-hover:scale-110 transition-all duration-500 relative overflow-hidden",
+          gradient, colorClass
         )}>
-          {icon}
+          <div className="absolute inset-0 bg-white/30 rounded-[24px] blur-sm opacity-0 group-hover:opacity-100 transition-opacity" />
+          <Icon size={28} strokeWidth={2.2} className="relative z-10" />
+          
+          {/* Animated Shine */}
+          <motion.div 
+            animate={{ x: ['-100%', '200%'] }}
+            transition={{ repeat: Infinity, duration: 3, ease: "linear", repeatDelay: 5 }}
+            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-[45deg]"
+          />
         </div>
         
         <div className="flex flex-col flex-1">
-          <h3 className="text-[#1A1C1E] text-base font-bold mb-0.5 leading-tight">{name}</h3>
-          <p className="text-[#8E949A] text-[11px] font-medium leading-tight mb-2 pr-4">{description}</p>
-          
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1">
-              <Star size={14} className="text-amber-400 fill-amber-400" />
-              <span className="text-[#1A1C1E] text-[11px] font-bold">{rating}</span>
+          <div className="flex items-center gap-2 mb-1">
+            <h3 className="text-[#1A1C1E] text-lg font-black tracking-tight leading-tight">{name}</h3>
+            <div className="px-1.5 py-0.5 bg-gray-50 rounded-md border border-gray-100">
+              <span className="text-[9px] font-black uppercase tracking-widest text-gray-400">{category}</span>
             </div>
-            <span className="text-[#8E949A] text-[11px] font-medium">{category}</span>
+          </div>
+          <p className="text-[#8E949A] text-xs font-bold leading-relaxed mb-3 pr-4 opacity-80">{description}</p>
+          
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-1.5 bg-amber-50 px-2.5 py-1 rounded-full border border-amber-100/50 shadow-sm">
+                <Star size={14} className="text-amber-400 fill-amber-400" />
+                <span className="text-[#1A1C1E] text-[12px] font-black">{rating}</span>
+              </div>
+              <div className="flex items-center gap-1 text-teal-600">
+                <Sparkles size={12} />
+                <span className="text-[10px] font-black uppercase tracking-wider">Top Rated</span>
+              </div>
+            </div>
+
+            <motion.button 
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="bg-[#1A1C1E] text-white px-6 py-3 rounded-2xl flex items-center gap-2 text-[12px] font-black tracking-tight shadow-xl hover:bg-teal-600 transition-all duration-300"
+            >
+              <span>Ochish</span>
+              <ExternalLink size={14} strokeWidth={3} />
+            </motion.button>
           </div>
         </div>
       </div>
-
-      <button 
-        aria-label={`Ochish ${name}`}
-        className="bg-gradient-to-r from-[#2D3A5D] to-[#0E8388] text-white px-5 py-2.5 rounded-full flex items-center gap-2 text-[11px] font-bold shadow-lg shadow-teal-500/10 active:scale-95 transition-transform"
-      >
-        Ochish
-        <ExternalLink size={14} />
-      </button>
-    </div>
+    </motion.div>
   );
 };
 

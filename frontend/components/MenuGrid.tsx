@@ -9,21 +9,78 @@ import {
   ShoppingBag,
   GraduationCap,
   BookOpen,
-  Lightbulb
+  Lightbulb,
+  ArrowRight
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/lib/contexts/auth-context';
 import { useAuthModal } from '@/lib/contexts/auth-modal-context';
 
 const menuItems = [
-  { title: 'Akkaunt', subtitle: 'Shaxsiy ma\'lumotlar saqlash', icon: User, gradient: 'from-[#2D3A5D] to-[#1A1C1E]', href: '/akkaunt' },
-  { title: 'Yaqinlar', subtitle: 'Yaqinlar ma\'lumotlari', icon: Heart, gradient: 'from-[#FF6B6B] to-[#E84393]', href: null },
-  { title: 'Hizmat', subtitle: 'Kuryerdan ta\'mirgacha', icon: Wrench, gradient: 'from-[#FF9F43] to-[#FF6B6B]', href: null },
-  { title: 'Maskan', subtitle: 'JKX, aqlli uy, lokatsiya', icon: MapPin, gradient: 'from-[#48D1CC] to-[#2D3A5D]', href: '/maskan' },
-  { title: 'Mahsulot', subtitle: 'Tovarlar — 0% komissiya', icon: ShoppingBag, gradient: 'from-[#FF9F43] to-[#EE5253]', href: '/mahsulot' },
-  { title: 'Mutaxassis', subtitle: 'Shifokor, yurist, maslahatchi', icon: GraduationCap, gradient: 'from-[#1DD1A1] to-[#10AC84]', href: '/mutaxassis' },
-  { title: 'Bilim', subtitle: 'Foydali bilimlar', icon: BookOpen, gradient: 'from-[#54A0FF] to-[#5F27CD]', href: null },
-  { title: 'G\'oyalar', subtitle: 'Tavsiyalar va maslahatlar', icon: Lightbulb, gradient: 'from-[#FF9F43] to-[#FF6B6B]', href: null },
+  { 
+    title: 'Akkaunt', 
+    subtitle: 'Shaxsiy ma\'lumotlar va profilingizni boshqarish', 
+    icon: User, 
+    gradient: 'from-blue-500 to-indigo-600', 
+    glow: 'bg-blue-400/20',
+    href: '/akkaunt' 
+  },
+  { 
+    title: 'Yaqinlar', 
+    subtitle: 'Oilangiz va yaqinlaringiz salomatligi nazorati', 
+    icon: Heart, 
+    gradient: 'from-rose-500 to-pink-600', 
+    glow: 'bg-rose-400/20',
+    href: null 
+  },
+  { 
+    title: 'Hizmat', 
+    subtitle: 'Maishiy texnika va uy jihozlarini ta\'mirlash', 
+    icon: Wrench, 
+    gradient: 'from-amber-500 to-orange-600', 
+    glow: 'bg-amber-400/20',
+    href: null 
+  },
+  { 
+    title: 'Maskan', 
+    subtitle: 'Aqlli uy tizimi va lokatsiya boshqaruvi', 
+    icon: MapPin, 
+    gradient: 'from-teal-500 to-emerald-600', 
+    glow: 'bg-teal-400/20',
+    href: '/maskan' 
+  },
+  { 
+    title: 'Mahsulot', 
+    subtitle: 'Sifatli mahsulotlar — 0% komissiya bilan', 
+    icon: ShoppingBag, 
+    gradient: 'from-violet-500 to-purple-600', 
+    glow: 'bg-violet-400/20',
+    href: '/mahsulot' 
+  },
+  { 
+    title: 'Mutaxassis', 
+    subtitle: 'Shifokor va yuristlardan professional maslahat', 
+    icon: GraduationCap, 
+    gradient: 'from-cyan-500 to-blue-600', 
+    glow: 'bg-cyan-400/20',
+    href: '/mutaxassis' 
+  },
+  { 
+    title: 'Bilim', 
+    subtitle: 'Siz uchun foydali va kerakli bilimlar bazasi', 
+    icon: BookOpen, 
+    gradient: 'from-indigo-500 to-purple-600', 
+    glow: 'bg-indigo-400/20',
+    href: null 
+  },
+  { 
+    title: 'G\'oyalar', 
+    subtitle: 'Hayotingizni osonlashtiruvchi yangi tavsiyalar', 
+    icon: Lightbulb, 
+    gradient: 'from-orange-500 to-red-600', 
+    glow: 'bg-orange-400/20',
+    href: null 
+  },
 ];
 
 const MenuGrid = () => {
@@ -40,26 +97,59 @@ const MenuGrid = () => {
   }
 
   return (
-    <div className="px-5 pb-32 grid grid-cols-2 gap-4 md:grid-cols-2 lg:grid-cols-4">
+    <div className="px-5 pb-32 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {menuItems.map((item) => (
         <button
           key={item.title}
           onClick={() => handleClick(item.href)}
-          className="w-full h-full text-left"
+          className="group relative text-left outline-none"
         >
-          <div className="bg-white rounded-[32px] p-6 shadow-sm border border-gray-50 flex flex-col items-center text-center hover:shadow-md transition-shadow cursor-pointer aspect-square justify-center w-full h-full">
-            <div className={cn(
-              "w-16 h-16 rounded-full bg-gradient-to-br flex items-center justify-center mb-4 shadow-inner",
-              item.gradient
-            )}>
-              <item.icon size={30} className="text-white" />
+          {/* Card Main Body */}
+          <div className="relative h-full bg-gradient-to-br from-white to-gray-50/50 rounded-[28px] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.04)] border border-white hover:border-white/80 hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] hover:-translate-y-1.5 transition-all duration-500 overflow-hidden flex flex-col items-start gap-5">
+            
+            {/* Light Reflection Effect */}
+            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+            
+            {/* Icon Section */}
+            <div className="relative flex-shrink-0">
+              {/* Outer Glow */}
+              <div className={cn(
+                "absolute -inset-2 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500",
+                item.glow
+              )} />
+              
+              {/* Icon Container */}
+              <div className={cn(
+                "relative w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3",
+                "bg-gradient-to-br",
+                item.gradient
+              )}>
+                <item.icon className="text-white w-7 h-7" />
+                
+                {/* Inner shine */}
+                <div className="absolute inset-0 bg-gradient-to-tr from-white/20 via-transparent to-transparent rounded-2xl" />
+              </div>
             </div>
-            <h3 className="text-[#1A1C1E] text-sm font-bold mb-1 leading-tight">
-              {item.title}
-            </h3>
-            <p className="text-[#8E949A] text-[10px] font-medium leading-tight px-1 line-clamp-2">
-              {item.subtitle}
-            </p>
+
+            {/* Text Section */}
+            <div className="space-y-2 flex-1">
+              <div className="flex items-center gap-2">
+                <h3 className="text-[#1A1C1E] text-lg font-bold tracking-tight">
+                  {item.title}
+                </h3>
+                <ArrowRight className="w-4 h-4 text-teal-500 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" />
+              </div>
+              <p className="text-gray-500 text-[13px] font-medium leading-relaxed">
+                {item.subtitle}
+              </p>
+            </div>
+
+            {/* Subtle Bottom Glow */}
+            <div className={cn(
+              "absolute bottom-0 left-0 w-full h-1 opacity-0 group-hover:opacity-100 transition-opacity duration-500",
+              "bg-gradient-to-r from-transparent via-current to-transparent",
+              item.gradient.split(' ')[1].replace('to-', 'text-')
+            )} />
           </div>
         </button>
       ))}
@@ -68,3 +158,4 @@ const MenuGrid = () => {
 };
 
 export default MenuGrid;
+

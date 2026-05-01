@@ -1,7 +1,18 @@
 "use client";
 
 import React, { useState } from 'react';
-import { UserCog } from 'lucide-react';
+import { 
+  UserCog, 
+  Stethoscope, 
+  Activity, 
+  Brain, 
+  Gavel, 
+  BarChart3, 
+  GraduationCap, 
+  Dumbbell, 
+  Laptop, 
+  FileCheck 
+} from 'lucide-react';
 import SubPageHeader from '@/components/SubPageHeader';
 import SectionTitle from '@/components/SectionTitle';
 import CategoryTabs from '@/components/CategoryTabs';
@@ -19,80 +30,92 @@ const categories = [
   "Frilans"
 ];
 
+
+
 const specialists = [
   {
     name: "TopDoc",
     description: "Shifokorlar — terapevt, kardiolog, LOR",
     rating: 4.9,
     category: "Tibbiyot",
-    icon: "👨‍⚕️",
-    gradient: "bg-gradient-to-br from-emerald-100 to-teal-100"
+    icon: Stethoscope,
+    gradient: "bg-emerald-50",
+    colorClass: "text-emerald-600"
   },
   {
     name: "SmileDoc",
     description: "Stomatologlar — implant, breket, tozalash",
     rating: 4.8,
     category: "Tibbiyot",
-    icon: "🦷",
-    gradient: "bg-gradient-to-br from-blue-100 to-teal-100"
+    icon: Activity,
+    gradient: "bg-blue-50",
+    colorClass: "text-blue-600"
   },
   {
     name: "MindCare",
     description: "Psixologlar va terapevtlar — onlayn",
     rating: 4.8,
     category: "Psixologiya",
-    icon: "🧠",
-    gradient: "bg-gradient-to-br from-slate-200 to-purple-100"
+    icon: Brain,
+    gradient: "bg-indigo-50",
+    colorClass: "text-indigo-600"
   },
   {
     name: "LegalPro",
     description: "Advokatlar va yuridik maslahat",
     rating: 4.6,
     category: "Huquq",
-    icon: "⚖️",
-    gradient: "bg-gradient-to-br from-emerald-100 to-emerald-200"
+    icon: Gavel,
+    gradient: "bg-slate-50",
+    colorClass: "text-slate-600"
   },
   {
     name: "FinExpert",
     description: "Buxgalterlar va moliyaviy maslahat",
     rating: 4.5,
     category: "Moliya",
-    icon: "📊",
-    gradient: "bg-gradient-to-br from-orange-100 to-yellow-100"
+    icon: BarChart3,
+    gradient: "bg-orange-50",
+    colorClass: "text-orange-600"
   },
   {
     name: "EduMentor",
     description: "Repetitorlar — matematika, ingliz tili",
     rating: 4.7,
     category: "Ta'lim",
-    icon: "👨‍🏫",
-    gradient: "bg-gradient-to-br from-blue-100 to-purple-100"
+    icon: GraduationCap,
+    gradient: "bg-blue-50",
+    colorClass: "text-blue-600"
   },
   {
     name: "FitCoach",
     description: "Shaxsiy trenerlar va dietologlar",
     rating: 4.8,
     category: "Sport",
-    icon: "🏃",
-    gradient: "bg-gradient-to-br from-orange-100 to-yellow-100"
+    icon: Dumbbell,
+    gradient: "bg-rose-50",
+    colorClass: "text-rose-600"
   },
   {
     name: "ProWork",
     description: "Dizaynerlar, dasturchilar, SMM",
     rating: 4.6,
     category: "Frilans",
-    icon: "💻",
-    gradient: "bg-gradient-to-br from-purple-100 to-pink-100"
+    icon: Laptop,
+    gradient: "bg-purple-50",
+    colorClass: "text-purple-600"
   },
   {
     name: "NotaryUz",
     description: "Notarius xizmatlari — tezkor",
     rating: 4.7,
     category: "Huquq",
-    icon: "📋",
-    gradient: "bg-gradient-to-br from-blue-100 to-slate-200"
+    icon: FileCheck,
+    gradient: "bg-teal-50",
+    colorClass: "text-teal-600"
   }
 ];
+
 
 export default function MutaxassisPage() {
   const [activeCategory, setActiveCategory] = useState("Barchasi");
