@@ -30,7 +30,7 @@ export default function AkkauntPage() {
 
   function handleLogout() {
     clearAuth();
-    router.push('/login');
+    router.push('/');
   }
 
   if (isLoading) {

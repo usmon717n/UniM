@@ -1,12 +1,19 @@
 'use client';
 
-import React from 'react';
 import { ShoppingCart, Bell, MessageSquare } from 'lucide-react';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/contexts/auth-context';
+import { useAuthModal } from '@/lib/contexts/auth-modal-context';
 
 const Header = () => {
   const { user } = useAuth();
+  const { openModal } = useAuthModal();
+  const router = useRouter();
+
+  function guard(href: string) {
+    if (!user) { openModal(href); return; }
+    router.push(href);
+  }
   const firstName = user?.name?.split(' ')[0] ?? 'Mehmon';
   const initials = user?.name
     ? user.name.split(' ').map((w) => w[0]).join('').toUpperCase().slice(0, 2)
@@ -31,23 +38,38 @@ const Header = () => {
       </div>
 
       <div className="flex flex-col items-end gap-2">
-        {/* Language Pill */}
-        <button className="bg-[#EDF1F5] px-3 py-1 rounded-full flex items-center gap-1.5 hover:bg-gray-200 transition-colors">
-          <span className="text-sm">🇺🇿</span>
-          <span className="text-[11px] font-bold text-[#1A1C1E]">UZ</span>
-        </button>
+        {/* Language Pill or Login button */}
+        {user ? (
+          <button className="bg-[#EDF1F5] px-3 py-1 rounded-full flex items-center gap-1.5 hover:bg-gray-200 transition-colors">
+            <span className="text-sm">🇺🇿</span>
+            <span className="text-[11px] font-bold text-[#1A1C1E]">UZ</span>
+          </button>
+        ) : (
+          <button
+            onClick={() => openModal('/')}
+            className="bg-teal-600 text-white px-3 py-1 rounded-full text-[11px] font-bold hover:bg-teal-700 transition-colors"
+          >
+            Kirish
+          </button>
+        )}
 
         <div className="flex items-center gap-3">
-          <Link 
-            href="/suhbatlar"
+          <button
+            onClick={() => guard('/suhbatlar')}
             className="w-9 h-9 rounded-full bg-[#EDF1F5] flex items-center justify-center text-[#5C6166] hover:bg-gray-200 transition-colors"
           >
             <MessageSquare size={18} />
-          </Link>
-          <button className="w-9 h-9 rounded-full bg-[#EDF1F5] flex items-center justify-center text-[#5C6166] hover:bg-gray-200 transition-colors">
+          </button>
+          <button
+            onClick={() => guard('/')}
+            className="w-9 h-9 rounded-full bg-[#EDF1F5] flex items-center justify-center text-[#5C6166] hover:bg-gray-200 transition-colors"
+          >
             <ShoppingCart size={18} />
           </button>
-          <button className="w-9 h-9 rounded-full bg-[#EDF1F5] flex items-center justify-center text-[#5C6166] relative hover:bg-gray-200 transition-colors">
+          <button
+            onClick={() => guard('/')}
+            className="w-9 h-9 rounded-full bg-[#EDF1F5] flex items-center justify-center text-[#5C6166] relative hover:bg-gray-200 transition-colors"
+          >
             <Bell size={18} />
             <span className="absolute -top-1 -right-1 bg-[#FF3B30] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center border-2 border-white">
               3
