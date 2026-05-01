@@ -29,36 +29,37 @@ const MemoryCard = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.2 }}
-      className="px-5 mb-8"
+      className="mb-6 sm:mb-8"
     >
-      <div className="bg-white/80 backdrop-blur-xl rounded-[32px] p-7 shadow-[0_20px_50px_rgba(0,0,0,0.04)] border border-white">
-        <div className="flex items-center justify-between mb-8">
-          <h2 className="text-[#1A1C1E] text-lg font-black tracking-tight flex items-center gap-2">
+      <div className="bg-white/80 backdrop-blur-xl rounded-[28px] sm:rounded-[32px] p-5 sm:p-7 shadow-[0_20px_50px_rgba(0,0,0,0.04)] border border-white">
+        <div className="flex items-center justify-between mb-6 sm:mb-8">
+          <h2 className="text-[#1A1C1E] text-base sm:text-lg font-black tracking-tight flex items-center gap-2">
             Shaxsiy xotira
             <Sparkles size={16} className="text-teal-500" />
           </h2>
-          <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest bg-gray-50 px-2 py-1 rounded-md">
+          <span className="text-[9px] sm:text-[10px] font-black text-gray-400 uppercase tracking-widest bg-gray-50 px-2 py-1 rounded-md">
             Cloud Sync
           </span>
         </div>
         
-        <div className="grid grid-cols-3 gap-3 sm:gap-4 mb-8">
+        <div className="grid grid-cols-3 gap-2.5 sm:gap-4 mb-6 sm:mb-8">
           {stats.map((stat, idx) => (
             <motion.div 
               key={idx}
               whileHover={{ y: -5, scale: 1.02 }}
               className={cn(
-                "relative group flex flex-col items-center p-4 rounded-3xl border border-transparent hover:border-white hover:shadow-xl transition-all duration-300 overflow-hidden",
+                "relative group flex flex-col items-center p-3 sm:p-4 rounded-2xl sm:rounded-3xl border border-transparent hover:border-white hover:shadow-xl transition-all duration-300 overflow-hidden",
                 "bg-gradient-to-br", stat.gradient
               )}
             >
-              <div className={cn("p-3 rounded-2xl bg-white shadow-sm mb-3 group-hover:rotate-12 transition-transform duration-500", stat.color)}>
-                <stat.icon size={20} strokeWidth={2.5} />
+              <div className={cn("p-2.5 sm:p-3 rounded-xl sm:rounded-2xl bg-white shadow-sm mb-2 sm:mb-3 group-hover:rotate-12 transition-transform duration-500", stat.color)}>
+                <stat.icon size={18} className="sm:hidden" strokeWidth={2.5} />
+                <stat.icon size={20} className="hidden sm:block" strokeWidth={2.5} />
               </div>
-              <span className="text-[#1A1C1E] text-2xl font-black leading-none mb-1">
+              <span className="text-[#1A1C1E] text-xl sm:text-2xl font-black leading-none mb-1">
                 <CountUp value={stat.value} />
               </span>
-              <span className="text-[#8E949A] text-[9px] font-black uppercase tracking-[0.1em] text-center">
+              <span className="text-[#8E949A] text-[8px] sm:text-[9px] font-black uppercase tracking-[0.1em] text-center">
                 {stat.label}
               </span>
             </motion.div>
@@ -72,22 +73,24 @@ const MemoryCard = () => {
           className="relative w-full group"
         >
           <div className="absolute -inset-1 bg-gradient-to-r from-teal-500/20 via-blue-500/20 to-purple-500/20 rounded-[28px] blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          <div className="relative w-full border-2 border-dashed border-gray-200 bg-gray-50/50 hover:bg-white hover:border-teal-500/50 rounded-[24px] py-8 flex flex-col items-center justify-center gap-3 transition-all duration-300">
-            <div className="w-12 h-12 rounded-full bg-white shadow-md flex items-center justify-center text-teal-600 group-hover:scale-110 transition-transform duration-500">
-              <Upload size={22} strokeWidth={2.5} />
+          <div className="relative w-full border-2 border-dashed border-gray-200 bg-gray-50/50 hover:bg-white hover:border-teal-500/50 rounded-[20px] sm:rounded-[24px] py-5 sm:py-8 flex flex-col items-center justify-center gap-2 sm:gap-3 transition-all duration-300">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white shadow-md flex items-center justify-center text-teal-600 group-hover:scale-110 transition-transform duration-500">
+              <Upload size={20} className="sm:hidden" strokeWidth={2.5} />
+              <Upload size={22} className="hidden sm:block" strokeWidth={2.5} />
             </div>
-            <div className="text-center">
-              <p className="text-[#1A1C1E] text-sm font-black tracking-tight">Fayl yuklash</p>
-              <p className="text-[#8E949A] text-[10px] font-bold uppercase tracking-widest mt-1">Drag & Drop fayllarni shu yerga</p>
+            <div className="text-center px-4">
+              <p className="text-[#1A1C1E] text-[13px] sm:text-sm font-black tracking-tight">Fayl yuklash</p>
+              <p className="text-[#8E949A] text-[9px] font-bold uppercase tracking-widest mt-0.5 sm:mt-1 hidden xs:block">Drag & Drop fayllarni shu yerga</p>
             </div>
             
             {/* Animated Plus Icon */}
             <motion.div 
               animate={{ rotate: 360 }}
               transition={{ repeat: Infinity, duration: 8, ease: "linear" }}
-              className="absolute top-4 right-4 text-gray-300 opacity-20 group-hover:opacity-100 group-hover:text-teal-500 transition-all"
+              className="absolute top-3 right-3 sm:top-4 sm:right-4 text-gray-300 opacity-20 group-hover:opacity-100 group-hover:text-teal-500 transition-all"
             >
-              <Plus size={24} />
+              <Plus size={20} className="sm:hidden" />
+              <Plus size={24} className="hidden sm:block" />
             </motion.div>
           </div>
         </motion.button>

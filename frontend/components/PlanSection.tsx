@@ -17,6 +17,7 @@ import {
   type PlanTaskType,
 } from '@/lib/api/plan-tasks';
 import { useAuth } from '@/lib/contexts/auth-context';
+import { useAuthModal } from '@/lib/contexts/auth-modal-context';
 
 const TYPE_STYLES: Record<
   PlanTaskType,
@@ -35,6 +36,7 @@ const TYPE_STYLES: Record<
 
 const PlanSection = () => {
   const { token } = useAuth();
+  const { openModal } = useAuthModal();
   const [plans, setPlans] = useState<PlanTask[]>([]);
   const [progressPercent, setProgressPercent] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -98,8 +100,37 @@ const PlanSection = () => {
     };
   }, [isCreateOpen, isCreating]);
 
+  const triggerCelebration = () => {
+    const duration = 3 * 1000;
+    const animationEnd = Date.now() + duration;
+    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 300 };
+
+    const randomInRange = (min: number, max: number) => Math.random() * (max - min) + min;
+
+    const interval: any = setInterval(function() {
+      const timeLeft = animationEnd - Date.now();
+
+      if (timeLeft <= 0) {
+        return clearInterval(interval);
+      }
+
+      const particleCount = 50 * (timeLeft / duration);
+      confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
+      confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
+    }, 250);
+
+    setShowCelebration(true);
+    setTimeout(() => setShowCelebration(false), 4000);
+  };
+
+  const requireAuth = () => {
+    if (token) return true;
+    openModal('/');
+    return false;
+  };
+
   const toggleComplete = async (task: PlanTask) => {
-    if (!token) return;
+    if (!requireAuth() || !token) return;
 
     // Optimistic Update: Update local state immediately for instant feedback
     const oldPlans = [...plans];
@@ -114,6 +145,11 @@ const PlanSection = () => {
 
     setPlans(newPlans);
     setProgressPercent(newProgress);
+
+    // Trigger celebration only if progress just reached 100%
+    if (newProgress === 100 && oldProgress < 100) {
+      triggerCelebration();
+    }
 
     try {
       if (task.isCompleted) {
@@ -134,6 +170,7 @@ const PlanSection = () => {
   };
 
   const handleAddTask = () => {
+    if (!requireAuth()) return;
     setNewTitle('');
     setNewTime('12:00');
     setNewType('CUSTOM');
@@ -155,7 +192,7 @@ const PlanSection = () => {
   };
 
   const handleCreateSubmit = async () => {
-    if (!token) return;
+    if (!requireAuth() || !token) return;
     if (!newTitle.trim()) {
       setCreateError('Vazifa nomini kiriting');
       return;
@@ -198,12 +235,13 @@ const PlanSection = () => {
   }, [token]);
 
   const openAllModal = async () => {
+    if (!requireAuth()) return;
     setIsAllOpen(true);
     await loadAllTasks();
   };
 
   const handleDelete = async (task: PlanTask) => {
-    if (!token) return;
+    if (!requireAuth() || !token) return;
     const ok = window.confirm(`"${task.title}" vazifasini o'chiraymi?`);
     if (!ok) return;
 
@@ -216,13 +254,14 @@ const PlanSection = () => {
   };
 
   const openEdit = (task: PlanTask) => {
+    if (!requireAuth()) return;
     setEditingTask(task);
     setEditTitle(task.title);
     setEditTime(task.scheduledTime);
   };
 
   const handleEditSave = async () => {
-    if (!token || !editingTask) return;
+    if (!requireAuth() || !token || !editingTask) return;
     if (!editTitle.trim()) {
       setError('Vazifa nomini kiriting');
       return;
@@ -246,31 +285,6 @@ const PlanSection = () => {
       setIsSavingEdit(false);
     }
   };
-
-  useEffect(() => {
-    if (progressPercent === 100 && !isLoading) {
-      const duration = 3 * 1000;
-      const animationEnd = Date.now() + duration;
-      const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 300 };
-
-      const randomInRange = (min: number, max: number) => Math.random() * (max - min) + min;
-
-      const interval: any = setInterval(function() {
-        const timeLeft = animationEnd - Date.now();
-
-        if (timeLeft <= 0) {
-          return clearInterval(interval);
-        }
-
-        const particleCount = 50 * (timeLeft / duration);
-        confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
-        confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
-      }, 250);
-
-      setShowCelebration(true);
-      setTimeout(() => setShowCelebration(false), 4000);
-    }
-  }, [progressPercent, isLoading]);
 
   return (
     <div className="mb-10">
@@ -308,28 +322,29 @@ const PlanSection = () => {
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="relative bg-white/30 backdrop-blur-2xl rounded-[32px] p-6 border border-white/50 shadow-[0_20px_50px_rgba(0,0,0,0.05)] overflow-hidden group"
+          className="relative bg-white/30 backdrop-blur-2xl rounded-[28px] sm:rounded-[32px] p-5 sm:p-6 border border-white/50 shadow-[0_20px_50px_rgba(0,0,0,0.05)] overflow-hidden group"
         >
           {/* Background Glow */}
           <div className="absolute top-0 right-0 w-32 h-32 bg-teal-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
           
-          <div className="relative z-10 flex flex-col gap-4">
+          <div className="relative z-10 flex flex-col gap-3 sm:gap-4">
             <div className="flex justify-between items-end">
-              <div className="space-y-1">
-                <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Progress</span>
-                <h4 className="text-slate-900 font-black text-lg">
-                  {progressPercent === 100 ? "Hammasi tayyor! 🎉" : 
-                   progressPercent > 50 ? "Yarmiga yetdingiz! 💪" :
-                   progressPercent > 0 ? "Zo'r boshlanish! ✨" : "Vaqtni unumli sarflang"}
+              <div className="space-y-0.5 sm:space-y-1">
+                <span className="text-[10px] sm:text-[11px] font-black text-slate-400 uppercase tracking-widest">Progress</span>
+                <h4 className="text-slate-900 font-black text-sm sm:text-lg truncate max-w-[150px] sm:max-w-none">
+                  {!token ? "Rejalaringizni ko'rish uchun kiring" :
+                   progressPercent === 100 ? "Hammasi tayyor!" : 
+                   progressPercent > 50 ? "Yarmiga yetdingiz!" :
+                   progressPercent > 0 ? "Zo'r boshlanish!" : "Vaqtni unumli sarflang"}
                 </h4>
               </div>
               <div className="flex items-baseline gap-0.5">
-                <span className="text-3xl font-black text-teal-600 leading-none">{progressPercent}</span>
-                <span className="text-sm font-black text-teal-600/60">%</span>
+                <span className="text-2xl sm:text-3xl font-black text-teal-600 leading-none">{progressPercent}</span>
+                <span className="text-[12px] sm:text-sm font-black text-teal-600/60">%</span>
               </div>
             </div>
 
-            <div className="relative h-3 w-full bg-slate-200/50 rounded-full overflow-hidden border border-white/20">
+            <div className="relative h-2.5 sm:h-3 w-full bg-slate-200/50 rounded-full overflow-hidden border border-white/20">
               <motion.div 
                 initial={{ width: 0 }}
                 animate={{ 
@@ -364,21 +379,37 @@ const PlanSection = () => {
       )}
 
       {/* Horizontal Carousel */}
-      <div className="flex overflow-x-auto gap-4 px-5 pb-6 no-scrollbar snap-x snap-mandatory">
+      <div className="flex overflow-x-auto gap-3 sm:gap-4 px-4 sm:px-5 pb-6 no-scrollbar snap-x snap-mandatory">
         {isLoading && plans.length === 0 && (
-          <div className="flex-shrink-0 w-[200px] snap-start rounded-[24px] p-5 bg-white border border-white text-sm text-gray-500">
+          <div className="flex-shrink-0 w-[160px] sm:w-[200px] snap-start rounded-[24px] sm:rounded-[32px] p-4 sm:p-5 bg-white border border-white text-sm text-gray-500">
             Yuklanmoqda...
           </div>
         )}
 
-        {!isLoading && !hasTasks && (
-          <div className="flex-shrink-0 w-[240px] snap-start rounded-[24px] p-5 bg-white border border-white text-sm text-gray-500">
+        {!token && (
+          <motion.button
+            whileTap={{ scale: 0.98 }}
+            onClick={() => openModal('/')}
+            className="flex-shrink-0 w-[260px] snap-start rounded-[24px] sm:rounded-[32px] p-5 bg-white/50 backdrop-blur-xl border border-white/60 text-left shadow-sm"
+          >
+            <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-2xl bg-teal-50 text-teal-600">
+              <Sparkles size={20} strokeWidth={2.2} />
+            </div>
+            <h3 className="text-[15px] font-black text-slate-900">Rejalaringiz yopiq</h3>
+            <p className="mt-1 text-[12px] font-semibold leading-relaxed text-slate-500">
+              Vazifalarni ko'rish va boshqarish uchun hisobga kiring.
+            </p>
+          </motion.button>
+        )}
+
+        {token && !isLoading && !hasTasks && (
+          <div className="flex-shrink-0 w-[240px] snap-start rounded-[24px] sm:rounded-[32px] p-4 sm:p-5 bg-white border border-white text-sm text-gray-500">
             Bugun uchun vazifalar topilmadi.
           </div>
         )}
 
         <AnimatePresence mode="popLayout">
-          {plans.map((plan) => {
+          {token && plans.map((plan) => {
             const style = TYPE_STYLES[plan.type];
             return (
               <motion.div
@@ -390,8 +421,8 @@ const PlanSection = () => {
                 whileTap={{ scale: 0.96 }}
                 onClick={() => void toggleComplete(plan)}
                 className={cn(
-                  "flex-shrink-0 w-[200px] snap-start relative group cursor-pointer overflow-hidden",
-                  "bg-white/20 backdrop-blur-2xl rounded-[32px] p-5 shadow-[0_8px_32px_rgba(0,0,0,0.05)] border border-white/40",
+                  "flex-shrink-0 w-[160px] sm:w-[200px] snap-start relative group cursor-pointer overflow-hidden",
+                  "bg-white/20 backdrop-blur-2xl rounded-[24px] sm:rounded-[32px] p-4 sm:p-5 shadow-[0_8px_32px_rgba(0,0,0,0.05)] border border-white/40",
                   "hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)] hover:bg-white/30 transition-all duration-500",
                   plan.isCompleted && "bg-emerald-500/10 border-emerald-500/20"
                 )}
@@ -399,7 +430,7 @@ const PlanSection = () => {
                 {/* Glass Sheen Effect */}
                 <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent pointer-events-none" />
                 
-                <div className="flex flex-col gap-5 relative z-10">
+                <div className="flex flex-col gap-4 sm:gap-5 relative z-10">
                   {/* Top Row: Icon & Checkbox */}
                   <div className="flex items-center justify-between">
                     <div className="relative">
@@ -408,16 +439,17 @@ const PlanSection = () => {
                         style.glow
                       )} />
                       <div className={cn(
-                        "relative w-11 h-11 rounded-2xl flex items-center justify-center shadow-md bg-gradient-to-br transition-transform duration-500 group-hover:scale-110",
+                        "relative w-10 h-10 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-md bg-gradient-to-br transition-transform duration-500 group-hover:scale-110",
                         style.gradient
                       )}>
-                        <style.icon size={22} className="text-white" />
+                        <style.icon size={18} className="text-white sm:hidden" />
+                        <style.icon size={22} className="text-white hidden sm:block" />
                       </div>
                     </div>
 
                     {/* Custom Checkbox (Glassy) */}
                     <div className={cn(
-                      "w-7 h-7 rounded-full border-2 transition-all duration-300 flex items-center justify-center backdrop-blur-md",
+                      "w-6 h-6 sm:w-7 sm:h-7 rounded-full border-2 transition-all duration-300 flex items-center justify-center backdrop-blur-md",
                       plan.isCompleted 
                         ? "bg-emerald-500 border-emerald-500 shadow-lg shadow-emerald-500/20 scale-110" 
                         : "bg-white/20 border-white/40 group-hover:border-teal-400"
@@ -430,7 +462,8 @@ const PlanSection = () => {
                             exit={{ scale: 0, rotate: 45 }}
                             transition={{ type: "spring", stiffness: 500, damping: 30 }}
                           >
-                            <Check size={16} className="text-white" />
+                            <Check size={14} className="text-white sm:hidden" />
+                            <Check size={16} className="text-white hidden sm:block" />
                           </motion.div>
                         )}
                       </AnimatePresence>
@@ -438,9 +471,9 @@ const PlanSection = () => {
                   </div>
 
                   {/* Bottom Section: Text */}
-                  <div className="space-y-1.5">
+                  <div className="space-y-1 sm:space-y-1.5">
                     <h3 className={cn(
-                      "text-[#1A1C1E] text-[15px] font-black leading-tight transition-all duration-300",
+                      "text-[#1A1C1E] text-[14px] sm:text-[15px] font-black leading-tight transition-all duration-300 truncate",
                       plan.isCompleted && "text-gray-400 line-through decoration-emerald-500/50 decoration-2"
                     )}>
                       {plan.title}
@@ -450,7 +483,7 @@ const PlanSection = () => {
                         "w-1 h-1 rounded-full transition-colors duration-300",
                         plan.isCompleted ? "bg-gray-300" : "bg-teal-500"
                       )} />
-                      <span className="text-[#8E949A] text-[10px] font-black uppercase tracking-[0.15em]">
+                      <span className="text-[#8E949A] text-[9px] sm:text-[10px] font-black uppercase tracking-[0.1em] sm:tracking-[0.15em]">
                         {plan.scheduledTime}
                       </span>
                     </div>
@@ -474,16 +507,18 @@ const PlanSection = () => {
         </AnimatePresence>
 
         {/* Add Task Placeholder */}
-        <motion.div
-          whileTap={{ scale: 0.98 }}
-          onClick={() => void handleAddTask()}
-          className="flex-shrink-0 w-[120px] snap-start border-2 border-dashed border-gray-200 rounded-[24px] flex flex-col items-center justify-center gap-2 group cursor-pointer hover:border-teal-400 hover:bg-teal-50/30 transition-all duration-300"
-        >
-          <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-white group-hover:text-teal-500 shadow-sm transition-all">
-            <span className="text-xl font-light">+</span>
-          </div>
-          <span className="text-[11px] font-bold text-gray-400 group-hover:text-teal-600 uppercase tracking-widest">Yangi</span>
-        </motion.div>
+        {token && (
+          <motion.div
+            whileTap={{ scale: 0.98 }}
+            onClick={() => void handleAddTask()}
+            className="flex-shrink-0 w-[120px] snap-start border-2 border-dashed border-gray-200 rounded-[24px] flex flex-col items-center justify-center gap-2 group cursor-pointer hover:border-teal-400 hover:bg-teal-50/30 transition-all duration-300"
+          >
+            <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-white group-hover:text-teal-500 shadow-sm transition-all">
+              <Plus size={20} strokeWidth={2.2} />
+            </div>
+            <span className="text-[11px] font-bold text-gray-400 group-hover:text-teal-600 uppercase tracking-widest">Yangi</span>
+          </motion.div>
+        )}
       </div>
 
       <AnimatePresence>
@@ -772,9 +807,12 @@ const PlanSection = () => {
                   <Check size={16} className="hidden sm:block" strokeWidth={4} />
                 </div>
               </div>
-              <h4 className="text-xl sm:text-2xl font-black text-slate-900 mb-1.5 sm:mb-2 leading-tight">
-                Tabriklaymiz! 🎉
-              </h4>
+              <div className="mb-1.5 sm:mb-2 flex items-center justify-center gap-2">
+                <h4 className="text-xl sm:text-2xl font-black text-slate-900 leading-tight">
+                  Tabriklaymiz!
+                </h4>
+                <Sparkles size={20} className="text-amber-500" strokeWidth={2.4} />
+              </div>
               <p className="text-slate-500 font-bold text-[12px] sm:text-sm">
                 Bugun barcha rejalaringizni 100% bajardingiz!
               </p>

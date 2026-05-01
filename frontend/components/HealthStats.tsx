@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useCallback, useEffect, useState } from 'react';
-import { Heart, Footprints, Moon, Plus } from 'lucide-react';
+import { Flame, Heart, Footprints, MapPin, Moon, Plus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/lib/contexts/auth-context';
 import {
@@ -237,11 +237,13 @@ const HealthStats = () => {
                         />
                       </div>
                       <div className="flex gap-3 mt-2">
-                        <span className="text-[10px] text-[#94A3B8] font-semibold">
-                          📍 {steps.distanceKm} km
+                        <span className="inline-flex items-center gap-1 text-[10px] text-[#94A3B8] font-semibold">
+                          <MapPin size={11} strokeWidth={2.2} />
+                          {steps.distanceKm} km
                         </span>
-                        <span className="text-[10px] text-[#94A3B8] font-semibold">
-                          🔥 {steps.calories} kcal
+                        <span className="inline-flex items-center gap-1 text-[10px] text-[#94A3B8] font-semibold">
+                          <Flame size={11} strokeWidth={2.2} />
+                          {steps.calories} kcal
                         </span>
                         <span className="text-[10px] text-[#94A3B8] font-semibold">
                           {steps.progress.toFixed(0)}% bajarildi

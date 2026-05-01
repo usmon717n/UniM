@@ -146,7 +146,7 @@ export default function MutaxassisPage() {
         />
 
         {/* Specialist List */}
-        <div className="px-5 grid grid-cols-1 md:grid-cols-2 gap-x-4">
+        <div className="px-5 grid grid-cols-1 md:grid-cols-2 gap-x-4 pb-28">
           {filteredSpecialists.map((specialist, idx) => (
             <SpecialistCard 
               key={idx}
@@ -154,9 +154,6 @@ export default function MutaxassisPage() {
             />
           ))}
         </div>
-
-        {/* Bottom Navigation */}
-        <BottomNav />
       </div>
     </main>
   );

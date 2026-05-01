@@ -64,7 +64,7 @@ const AiSearch = () => {
   };
 
   return (
-    <div className="px-5 mb-10 w-full max-w-4xl mx-auto">
+    <div className="px-4 sm:px-5 mb-6 sm:mb-10 w-full max-w-4xl mx-auto">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -75,14 +75,14 @@ const AiSearch = () => {
       >
         {/* Cursor Follow Glow */}
         <div 
-          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-[999px] z-0"
+          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-[32px] sm:rounded-full z-0"
           style={{
             background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(20, 184, 166, 0.08), transparent 40%)`
           }}
         />
 
         {/* Shine Sweep Animation */}
-        <div className="absolute inset-0 overflow-hidden rounded-[999px] pointer-events-none z-0">
+        <div className="absolute inset-0 overflow-hidden rounded-[32px] sm:rounded-full pointer-events-none z-0">
           <motion.div 
             animate={{ x: ['-100%', '200%'] }}
             transition={{ repeat: Infinity, duration: 3, ease: "linear", repeatDelay: 5 }}
@@ -95,25 +95,25 @@ const AiSearch = () => {
           onSubmit={handleSubmit}
           animate={isFocused ? { scale: 1.015 } : { scale: 1 }}
           className={cn(
-            "relative z-10 flex items-center bg-white/60 backdrop-blur-xl rounded-[999px] p-1.5 border transition-all duration-500",
+            "relative z-10 flex items-center bg-white/60 backdrop-blur-xl rounded-[32px] sm:rounded-full p-1 sm:p-1.5 border transition-all duration-500",
             isFocused 
               ? "border-teal-500/50 shadow-[0_0_40px_rgba(20,184,166,0.15)] ring-4 ring-teal-500/5" 
               : "border-white shadow-[0_10px_40px_rgba(0,0,0,0.04)]"
           )}
         >
           {/* Left Icon */}
-          <div className="pl-5 text-gray-400">
+          <div className="pl-4 sm:pl-5 text-gray-400">
             <Search size={20} className={cn("transition-colors duration-300", isFocused && "text-teal-500")} />
           </div>
 
           {/* Input Field */}
-          <div className="relative flex-1 h-12">
+          <div className="relative flex-1 h-11 sm:h-12 min-w-0">
             <input
               type="text"
               onFocus={handleFocus}
               onBlur={() => setIsFocused(false)}
               readOnly={!user}
-              className="w-full h-full bg-transparent px-4 outline-none text-[#1A1C1E] text-[15px] font-medium placeholder-transparent"
+              className="w-full h-full bg-transparent px-3 sm:px-4 outline-none text-[#1A1C1E] text-[16px] sm:text-[15px] font-medium placeholder-transparent"
             />
             
             {/* Animated Placeholder */}
@@ -125,10 +125,14 @@ const AiSearch = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.5 }}
-                  className="absolute inset-0 flex items-center px-4 pointer-events-none"
+                  className="absolute inset-0 flex items-center px-3 sm:px-4 pointer-events-none truncate"
                 >
-                  <span className="text-gray-400 text-[15px] font-medium">
-                    Avimed AI'dan so'rang: <span className="text-teal-600/60 italic">{suggestions[suggestionIndex]}</span>
+                  <span className="text-gray-400 text-[14px] sm:text-[15px] font-medium truncate">
+                    <span className="hidden sm:inline">Avimed AI'dan so'rang: </span>
+                    <span className={cn(
+                      "text-teal-600/60 italic",
+                      !user && "text-gray-400/60"
+                    )}>{suggestions[suggestionIndex]}</span>
                   </span>
                 </motion.div>
               )}
@@ -136,9 +140,9 @@ const AiSearch = () => {
           </div>
 
           {/* Right Side Actions */}
-          <div className="flex items-center gap-2 pr-2">
+          <div className="flex items-center gap-2 pr-1.5">
             {!isFocused && (
-              <div className="hidden sm:flex items-center gap-1 bg-gray-100/80 px-2 py-1 rounded-lg border border-gray-200/50">
+              <div className="hidden md:flex items-center gap-1 bg-gray-100/80 px-2 py-1 rounded-lg border border-gray-200/50">
                 <Command size={10} className="text-gray-400" />
                 <span className="text-[10px] font-black text-gray-400 tracking-tighter">K</span>
               </div>
@@ -148,7 +152,7 @@ const AiSearch = () => {
               type="submit"
               disabled={isLoading}
               className={cn(
-                "relative h-11 w-11 sm:w-auto sm:px-6 rounded-full flex items-center justify-center gap-2 transition-all duration-500 overflow-hidden",
+                "relative h-11 w-11 sm:h-12 sm:w-auto sm:px-6 rounded-full flex items-center justify-center gap-2 transition-all duration-500 overflow-hidden shrink-0",
                 "bg-gradient-to-r from-teal-500 to-emerald-600 text-white shadow-lg shadow-teal-500/20 active:scale-95"
               )}
             >
@@ -162,6 +166,7 @@ const AiSearch = () => {
                   <motion.div
                     animate={{ rotate: [0, 15, -15, 0] }}
                     transition={{ repeat: Infinity, duration: 2 }}
+                    className="flex-shrink-0"
                   >
                     <Sparkles size={18} className="text-white/90" />
                   </motion.div>
@@ -173,7 +178,7 @@ const AiSearch = () => {
 
         {/* Background Aura */}
         <div className={cn(
-          "absolute -inset-4 bg-gradient-to-tr from-teal-500/5 via-blue-500/5 to-purple-500/5 rounded-[999px] blur-3xl -z-10 transition-opacity duration-1000",
+          "absolute -inset-4 bg-gradient-to-tr from-teal-500/5 via-blue-500/5 to-purple-500/5 rounded-full blur-3xl -z-10 transition-opacity duration-1000",
           isFocused ? "opacity-100" : "opacity-0"
         )} />
       </motion.div>
@@ -183,14 +188,14 @@ const AiSearch = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.8 }}
-        className="mt-4 flex flex-wrap justify-center gap-2"
+        className="mt-3 flex overflow-x-auto whitespace-nowrap gap-2 no-scrollbar px-1 sm:justify-center sm:flex-wrap"
       >
         {quickSuggestions.map(({ label, icon: Icon }) => (
           <button 
             key={label}
-            className="inline-flex items-center gap-1.5 text-[11px] font-bold text-gray-400 bg-white/40 hover:bg-white hover:text-teal-600 px-3 py-1.5 rounded-full border border-white/60 transition-all duration-300"
+            className="inline-flex items-center gap-1.5 text-[12px] sm:text-[11px] font-bold text-gray-400 bg-white/40 hover:bg-white hover:text-teal-600 px-4 sm:px-3 py-2 sm:py-1.5 rounded-full border border-white/60 transition-all duration-300 shrink-0 h-9 sm:h-auto"
           >
-            <Icon size={13} strokeWidth={2.2} />
+            <Icon size={14} strokeWidth={2.2} />
             {label}
           </button>
         ))}

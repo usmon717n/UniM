@@ -20,6 +20,9 @@ export const metadata: Metadata = {
   },
 };
 
+import PageTransition from "@/components/PageTransition";
+import BottomNav from "@/components/BottomNav";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -31,8 +34,11 @@ export default function RootLayout({
         <AuthProvider>
           <AuthModalProvider>
             <SwipeNavigation>
-              {children}
+              <PageTransition>
+                {children}
+              </PageTransition>
             </SwipeNavigation>
+            <BottomNav />
             <AuthModal />
           </AuthModalProvider>
         </AuthProvider>

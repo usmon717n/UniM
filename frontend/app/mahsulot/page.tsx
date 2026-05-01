@@ -217,9 +217,6 @@ export default function MahsulotPage() {
             )}
           </motion.div>
         </div>
-
-        {/* Bottom Navigation */}
-        <BottomNav />
       </div>
     </main>
   );

@@ -13,9 +13,9 @@ const AvimedPassCard = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.1 }}
-      className="px-5 mb-8"
+      className="mb-6 sm:mb-8"
     >
-      <div className="bg-white/80 backdrop-blur-xl rounded-[32px] p-7 shadow-[0_20px_50px_rgba(0,0,0,0.04)] border border-white flex flex-col items-center relative overflow-hidden group">
+      <div className="bg-white/80 backdrop-blur-xl rounded-[28px] sm:rounded-[32px] p-5 sm:p-7 shadow-[0_20px_50px_rgba(0,0,0,0.04)] border border-white flex flex-col items-center relative overflow-hidden group">
         
         {/* Animated Background Gradient */}
         <motion.div 
@@ -24,7 +24,7 @@ const AvimedPassCard = () => {
           className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] bg-[radial-gradient(circle_at_center,rgba(20,184,166,0.03)_0%,transparent_70%)] pointer-events-none"
         />
 
-        <div className="w-full flex justify-between items-center mb-8 relative z-10">
+        <div className="w-full flex justify-between items-center mb-6 sm:mb-8 relative z-10">
           <div className="flex items-center gap-2.5 text-[#1A1C1E]">
             <div className="p-2 bg-teal-50 rounded-xl">
               <QrCode size={18} className="text-teal-600" />
@@ -38,11 +38,11 @@ const AvimedPassCard = () => {
         </div>
 
         {/* QR Section Container */}
-        <div className="relative mb-8 group/qr">
+        <div className="relative mb-6 sm:mb-8 group/qr">
           {/* Rotating Gradient Border */}
           <div className="absolute -inset-1.5 bg-gradient-to-r from-teal-500 via-blue-500 to-purple-500 rounded-[2.5rem] blur opacity-20 group-hover/qr:opacity-40 transition-opacity duration-500 animate-spin-slow" />
           
-          <div className="relative w-48 h-48 bg-white rounded-[2.5rem] shadow-2xl border border-gray-50 flex items-center justify-center overflow-hidden">
+          <div className="relative w-40 h-40 sm:w-48 sm:h-48 bg-white rounded-[2.5rem] shadow-2xl border border-gray-50 flex items-center justify-center overflow-hidden">
             {/* Scanning Line Animation */}
             <AnimatePresence>
               {isVisible && (
@@ -61,7 +61,8 @@ const AvimedPassCard = () => {
               "transition-all duration-700 flex flex-col items-center justify-center gap-3",
               !isVisible ? "filter blur-md grayscale scale-95 opacity-40" : "filter blur-0 grayscale-0 scale-100 opacity-100"
             )}>
-              <QrCode size={90} className="text-[#1A1C1E] stroke-[1.5]" />
+              <QrCode size={80} className="text-[#1A1C1E] stroke-[1.5] sm:hidden" />
+              <QrCode size={90} className="text-[#1A1C1E] stroke-[1.5] hidden sm:block" />
               <div className="flex items-center gap-1.5 bg-gray-50 px-2 py-1 rounded-lg">
                 <Sparkles size={10} className="text-teal-500" />
                 <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Digital Signature</span>
@@ -91,7 +92,7 @@ const AvimedPassCard = () => {
           </div>
         </button>
 
-        <p className="mt-6 text-[#8E949A] text-[11px] font-bold text-center leading-relaxed max-w-[220px] uppercase tracking-wider opacity-60">
+        <p className="mt-5 sm:mt-6 text-[#8E949A] text-[10px] sm:text-[11px] font-bold text-center leading-relaxed max-w-[220px] uppercase tracking-wider opacity-60">
           Emergency medical access QR signature
         </p>
       </div>

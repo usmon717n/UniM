@@ -3,7 +3,6 @@ import HealthStats from '@/components/HealthStats';
 import AiSearch from '@/components/AiSearch';
 import PlanSection from '@/components/PlanSection';
 import MenuGrid from '@/components/MenuGrid';
-import BottomNav from '@/components/BottomNav';
 
 export default function Home() {
   return (
@@ -26,9 +25,6 @@ export default function Home() {
           {/* Main Menu Grid */}
           <MenuGrid />
         </div>
-
-        {/* Bottom Navigation (Mobile only) */}
-        <BottomNav />
       </div>
     </main>
   );
