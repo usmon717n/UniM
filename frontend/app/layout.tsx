@@ -4,8 +4,7 @@ import "./globals.css";
 import { AuthProvider } from "@/lib/contexts/auth-context";
 import { AuthModalProvider } from "@/lib/contexts/auth-modal-context";
 import { LanguageProvider } from "@/lib/contexts/language-context";
-import { AuthModal } from "@/components/AuthModal";
-import SwipeNavigation from "@/components/SwipeNavigation";
+import AppShell from "@/components/AppShell";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -21,9 +20,6 @@ export const metadata: Metadata = {
   },
 };
 
-import PageTransition from "@/components/PageTransition";
-import BottomNav from "@/components/BottomNav";
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -35,13 +31,7 @@ export default function RootLayout({
         <AuthProvider>
           <LanguageProvider>
           <AuthModalProvider>
-            <SwipeNavigation>
-              <PageTransition>
-                {children}
-              </PageTransition>
-            </SwipeNavigation>
-            <BottomNav />
-            <AuthModal />
+            <AppShell>{children}</AppShell>
           </AuthModalProvider>
           </LanguageProvider>
         </AuthProvider>
