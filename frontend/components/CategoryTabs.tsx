@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 
 interface Category {
   name: string;
+  key?: string;
   icon?: LucideIcon;
 }
 
@@ -19,17 +20,18 @@ interface CategoryTabsProps {
 const CategoryTabs = ({ categories, activeCategory, onCategoryChange }: CategoryTabsProps) => {
   return (
     <div className="flex overflow-x-auto gap-3 px-5 mb-10 no-scrollbar scroll-smooth">
-      {categories.map((cat, idx) => {
+      {categories.map((cat) => {
         const name = typeof cat === 'string' ? cat : cat.name;
+        const key = typeof cat === 'string' ? cat : (cat.key ?? cat.name);
         const Icon = typeof cat === 'string' ? null : cat.icon;
-        const isActive = activeCategory === name;
+        const isActive = activeCategory === key;
 
         return (
           <motion.button
-            key={name}
+            key={key}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => onCategoryChange(name)}
+            onClick={() => onCategoryChange(key)}
             className={cn(
               "flex-shrink-0 flex items-center gap-2.5 px-6 py-3 rounded-full text-[11px] font-black uppercase tracking-wider transition-all duration-300 border",
               isActive

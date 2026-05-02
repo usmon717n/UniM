@@ -15,78 +15,29 @@ import {
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/lib/contexts/auth-context';
 import { useAuthModal } from '@/lib/contexts/auth-modal-context';
+import { useT } from '@/lib/hooks/useT';
 
-const menuItems = [
-  { 
-    title: 'Akkaunt', 
-    subtitle: 'Shaxsiy ma\'lumotlar va profilingizni boshqarish', 
-    icon: User, 
-    gradient: 'from-blue-500 to-indigo-600', 
-    glow: 'bg-blue-400/20',
-    href: '/akkaunt' 
-  },
-  { 
-    title: 'Yaqinlar', 
-    subtitle: 'Oilangiz va yaqinlaringiz salomatligi nazorati', 
-    icon: Heart, 
-    gradient: 'from-rose-500 to-pink-600', 
-    glow: 'bg-rose-400/20',
-    href: null 
-  },
-  { 
-    title: 'Hizmat', 
-    subtitle: 'Maishiy texnika va uy jihozlarini ta\'mirlash', 
-    icon: Wrench, 
-    gradient: 'from-amber-500 to-orange-600', 
-    glow: 'bg-amber-400/20',
-    href: null 
-  },
-  { 
-    title: 'Maskan', 
-    subtitle: 'Aqlli uy tizimi va lokatsiya boshqaruvi', 
-    icon: MapPin, 
-    gradient: 'from-teal-500 to-emerald-600', 
-    glow: 'bg-teal-400/20',
-    href: '/maskan' 
-  },
-  { 
-    title: 'Mahsulot', 
-    subtitle: 'Sifatli mahsulotlar — 0% komissiya bilan', 
-    icon: ShoppingBag, 
-    gradient: 'from-violet-500 to-purple-600', 
-    glow: 'bg-violet-400/20',
-    href: '/mahsulot' 
-  },
-  { 
-    title: 'Mutaxassis', 
-    subtitle: 'Shifokor va yuristlardan professional maslahat', 
-    icon: GraduationCap, 
-    gradient: 'from-cyan-500 to-blue-600', 
-    glow: 'bg-cyan-400/20',
-    href: '/mutaxassis' 
-  },
-  { 
-    title: 'Bilim', 
-    subtitle: 'Siz uchun foydali va kerakli bilimlar bazasi', 
-    icon: BookOpen, 
-    gradient: 'from-indigo-500 to-purple-600', 
-    glow: 'bg-indigo-400/20',
-    href: null 
-  },
-  { 
-    title: 'G\'oyalar', 
-    subtitle: 'Hayotingizni osonlashtiruvchi yangi tavsiyalar', 
-    icon: Lightbulb, 
-    gradient: 'from-orange-500 to-red-600', 
-    glow: 'bg-orange-400/20',
-    href: null 
-  },
-];
+const MENU_STATIC = [
+  { key: 'account',    icon: User,         gradient: 'from-blue-500 to-indigo-600',  glow: 'bg-blue-400/20',   href: '/akkaunt' },
+  { key: 'family',     icon: Heart,        gradient: 'from-rose-500 to-pink-600',    glow: 'bg-rose-400/20',   href: null },
+  { key: 'service',    icon: Wrench,       gradient: 'from-amber-500 to-orange-600', glow: 'bg-amber-400/20',  href: null },
+  { key: 'home',       icon: MapPin,       gradient: 'from-teal-500 to-emerald-600', glow: 'bg-teal-400/20',   href: '/maskan' },
+  { key: 'market',     icon: ShoppingBag,  gradient: 'from-violet-500 to-purple-600',glow: 'bg-violet-400/20', href: '/mahsulot' },
+  { key: 'specialist', icon: GraduationCap,gradient: 'from-cyan-500 to-blue-600',    glow: 'bg-cyan-400/20',   href: '/mutaxassis' },
+  { key: 'knowledge',  icon: BookOpen,     gradient: 'from-indigo-500 to-purple-600',glow: 'bg-indigo-400/20', href: null },
+  { key: 'ideas',      icon: Lightbulb,    gradient: 'from-orange-500 to-red-600',   glow: 'bg-orange-400/20', href: null },
+] as const;
 
 const MenuGrid = () => {
   const { user } = useAuth();
   const { openModal } = useAuthModal();
   const router = useRouter();
+  const tr = useT();
+
+  const menuItems = MENU_STATIC.map((s) => ({
+    ...s,
+    ...tr.menu[s.key],
+  }));
 
   function handleClick(href: string | null) {
     if (!user) {
@@ -100,7 +51,7 @@ const MenuGrid = () => {
     <div className="px-4 sm:px-5 pb-32 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
       {menuItems.map((item) => (
         <button
-          key={item.title}
+          key={item.key}
           onClick={() => handleClick(item.href)}
           className="group relative text-left outline-none"
         >

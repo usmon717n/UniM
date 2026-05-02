@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useTransition, useEffect } from 'react';
+import { useState, useTransition, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { X, Mail, Lock, User, Phone, Eye, EyeOff, Loader2, Sparkles } from 'lucide-react';
 import { z } from 'zod';
@@ -8,6 +8,7 @@ import { apiLogin, apiRegister, type AuthUser } from '@/lib/api/auth';
 import { useAuth } from '@/lib/contexts/auth-context';
 import { useAuthModal } from '@/lib/contexts/auth-modal-context';
 import BrandLogo from '@/components/BrandLogo';
+import { useT } from '@/lib/hooks/useT';
 
 const PHONE_RE = /^\+998\d{9}$/;
 
@@ -35,39 +36,6 @@ function formatUzPhone(value: string): string {
   return parts.join(' ');
 }
 
-// ── Schemas ────────────────────────────────────────────────────────────────
-
-const loginSchema = z.object({
-  identifier: z.string().min(1, 'Email yoki telefon raqam kiritilishi shart'),
-  password: z.string().min(1, 'Parol kiritilishi shart'),
-});
-
-const registerEmailSchema = z.object({
-  method: z.literal('email'),
-  name: z.string().min(2, 'Ism kamida 2 ta belgi').optional(),
-  email: z.string().email('Email noto\'g\'ri'),
-  password: z
-    .string()
-    .min(8, 'Kamida 8 ta belgi')
-    .regex(/[a-zA-Z]/, 'Harf bo\'lishi shart')
-    .regex(/\d/, 'Raqam bo\'lishi shart'),
-});
-
-const registerPhoneSchema = z.object({
-  method: z.literal('phone'),
-  name: z.string().min(2, 'Ism kamida 2 ta belgi').optional(),
-  phoneNumber: z
-    .string()
-    .min(1, 'Telefon raqam kiritilishi shart')
-    .transform((v) => normalizePhone(v))
-    .refine((v) => PHONE_RE.test(v), 'Telefon: +998901234567 formatida kiriting'),
-  password: z
-    .string()
-    .min(8, 'Kamida 8 ta belgi')
-    .regex(/[a-zA-Z]/, 'Harf bo\'lishi shart')
-    .regex(/\d/, 'Raqam bo\'lishi shart'),
-});
-
 type FieldErrors = Record<string, string | undefined>;
 type RegMethod = 'email' | 'phone';
 
@@ -77,6 +45,35 @@ export function AuthModal() {
   const { isOpen, from, initialTab, closeModal } = useAuthModal();
   const { setAuth } = useAuth();
   const router = useRouter();
+  const tr = useT();
+
+  const loginSchema = useMemo(() => z.object({
+    identifier: z.string().min(1, tr.auth.errors.identifierRequired),
+    password:   z.string().min(1, tr.auth.errors.passwordRequired),
+  }), [tr]);
+
+  const registerEmailSchema = useMemo(() => z.object({
+    method:   z.literal('email'),
+    name:     z.string().min(2, tr.auth.errors.nameMin).optional(),
+    email:    z.string().email(tr.auth.errors.emailInvalid),
+    password: z.string()
+      .min(8, tr.auth.errors.passwordMin)
+      .regex(/[a-zA-Z]/, tr.auth.errors.passwordLetter)
+      .regex(/\d/, tr.auth.errors.passwordDigit),
+  }), [tr]);
+
+  const registerPhoneSchema = useMemo(() => z.object({
+    method:      z.literal('phone'),
+    name:        z.string().min(2, tr.auth.errors.nameMin).optional(),
+    phoneNumber: z.string()
+      .min(1, tr.auth.errors.phoneRequired)
+      .transform((v) => normalizePhone(v))
+      .refine((v) => PHONE_RE.test(v), tr.auth.errors.phoneFormat),
+    password: z.string()
+      .min(8, tr.auth.errors.passwordMin)
+      .regex(/[a-zA-Z]/, tr.auth.errors.passwordLetter)
+      .regex(/\d/, tr.auth.errors.passwordDigit),
+  }), [tr]);
 
   const [tab, setTab] = useState<'login' | 'register'>('login');
   const [regMethod, setRegMethod] = useState<RegMethod>('email');
@@ -135,7 +132,7 @@ export function AuthModal() {
         const data = await apiLogin({ identifier: normalizedIdentifier, password });
         onSuccess(data.accessToken, data.user);
       } catch (err) {
-        setServerError(err instanceof Error ? err.message : 'Xatolik yuz berdi');
+        setServerError(err instanceof Error ? err.message : tr.auth.serverError);
       }
     });
   }
@@ -177,7 +174,7 @@ export function AuthModal() {
         const data = await apiRegister(payload);
         onSuccess(data.accessToken, data.user);
       } catch (err) {
-        setServerError(err instanceof Error ? err.message : 'Xatolik yuz berdi');
+        setServerError(err instanceof Error ? err.message : tr.auth.serverError);
       }
     });
   }
@@ -217,7 +214,7 @@ export function AuthModal() {
               <div>
                 <span className="block font-black text-[#1A1A1A] text-xl leading-none">Avimed</span>
                 <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">
-                  Shu yerda va Hozir
+                  {tr.auth.tagline}
                 </span>
               </div>
             </div>
@@ -244,7 +241,7 @@ export function AuthModal() {
                   tab === t ? 'text-teal-600' : 'text-gray-400 hover:text-gray-500'
                 }`}
               >
-                {t === 'login' ? 'Kirish' : "Ro'yxatdan o'tish"}
+                {t === 'login' ? tr.auth.loginTab : tr.auth.registerTab}
               </button>
             ))}
           </div>
@@ -270,7 +267,7 @@ export function AuthModal() {
                   />
                   <input
                     type="text"
-                    placeholder="Email yoki telefon raqam"
+                    placeholder={tr.auth.identifierPh}
                     autoComplete="username"
                     value={loginValues.identifier}
                     onChange={(e) => {
@@ -297,7 +294,7 @@ export function AuthModal() {
                   />
                   <input
                     type={showPassword ? 'text' : 'password'}
-                    placeholder="Parol"
+                    placeholder={tr.auth.passwordPh}
                     autoComplete="current-password"
                     value={loginValues.password}
                     onChange={(e) => {
@@ -328,11 +325,11 @@ export function AuthModal() {
                   type="button"
                   className="text-[12px] font-bold text-teal-600 hover:text-teal-700 transition-colors"
                 >
-                  Parolni unutdingizmi?
+                  {tr.auth.forgotPassword}
                 </button>
               </div>
 
-              <SubmitButton isPending={isPending} label="Kirish" />
+              <SubmitButton isPending={isPending} label={tr.auth.loginTab} />
             </form>
           ) : (
             /* ── REGISTER ── */
@@ -363,7 +360,7 @@ export function AuthModal() {
                       </>
                     ) : (
                       <>
-                        <Phone size={13} /> Telefon
+                        <Phone size={13} /> {tr.auth.phone}
                       </>
                     )}
                   </button>
@@ -379,7 +376,7 @@ export function AuthModal() {
                   />
                   <input
                     type="text"
-                    placeholder="To'liq ismingiz (ixtiyoriy)"
+                    placeholder={tr.auth.namePh}
                     value={registerValues.name}
                     onChange={(e) => {
                       setRegisterValues((v) => ({ ...v, name: e.target.value }));
@@ -406,7 +403,7 @@ export function AuthModal() {
                     />
                     <input
                       type="email"
-                      placeholder="Email manzilingiz"
+                      placeholder={tr.auth.emailPh}
                       autoComplete="email"
                       value={registerValues.email}
                       onChange={(e) => {
@@ -471,7 +468,7 @@ export function AuthModal() {
                   />
                   <input
                     type={showPassword ? 'text' : 'password'}
-                    placeholder="Parol yarating"
+                    placeholder={tr.auth.newPasswordPh}
                     autoComplete="new-password"
                     value={registerValues.password}
                     onChange={(e) => {
@@ -497,14 +494,14 @@ export function AuthModal() {
                 )}
               </div>
 
-              <SubmitButton isPending={isPending} label="Ro'yxatdan o'tish" />
+              <SubmitButton isPending={isPending} label={tr.auth.registerTab} />
             </form>
           )}
 
           <p className="text-center text-[12px] text-gray-400 mt-6 font-medium">
-            Tizimdan foydalanib, siz{' '}
-            <button className="text-teal-600 hover:underline">Shartlarimizga</button> rozilik
-            bildirasiz.
+            {tr.auth.termsLine.split(tr.auth.termsLink)[0]}
+            <button className="text-teal-600 hover:underline">{tr.auth.termsLink}</button>
+            {tr.auth.termsLine.split(tr.auth.termsLink)[1]}
           </p>
         </div>
       </div>

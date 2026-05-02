@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { FileText, Image as ImageIcon, Folder, Upload, Plus, Sparkles } from 'lucide-react';
 import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { useT } from '@/lib/hooks/useT';
 
 const CountUp = ({ value }: { value: number }) => {
   const count = useMotionValue(0);
@@ -18,10 +19,11 @@ const CountUp = ({ value }: { value: number }) => {
 };
 
 const MemoryCard = () => {
+  const tr = useT();
   const stats = [
-    { label: 'Hujjatlar', value: 12, icon: FileText, gradient: 'from-blue-500/10 to-indigo-500/10', color: 'text-blue-600' },
-    { label: 'Rasmlar', value: 34, icon: ImageIcon, gradient: 'from-rose-500/10 to-orange-500/10', color: 'text-rose-600' },
-    { label: 'Tahlillar', value: 8, icon: Folder, gradient: 'from-emerald-500/10 to-teal-500/10', color: 'text-emerald-600' }
+    { label: tr.memory.documents, value: 12, icon: FileText, gradient: 'from-blue-500/10 to-indigo-500/10', color: 'text-blue-600' },
+    { label: tr.memory.photos,    value: 34, icon: ImageIcon, gradient: 'from-rose-500/10 to-orange-500/10', color: 'text-rose-600' },
+    { label: tr.memory.analyses,  value: 8,  icon: Folder,    gradient: 'from-emerald-500/10 to-teal-500/10', color: 'text-emerald-600' }
   ];
 
   return (
@@ -34,11 +36,11 @@ const MemoryCard = () => {
       <div className="bg-white/80 backdrop-blur-xl rounded-[28px] sm:rounded-[32px] p-5 sm:p-7 shadow-[0_20px_50px_rgba(0,0,0,0.04)] border border-white">
         <div className="flex items-center justify-between mb-6 sm:mb-8">
           <h2 className="text-[#1A1C1E] text-base sm:text-lg font-black tracking-tight flex items-center gap-2">
-            Shaxsiy xotira
+            {tr.memory.title}
             <Sparkles size={16} className="text-teal-500" />
           </h2>
           <span className="text-[9px] sm:text-[10px] font-black text-gray-400 uppercase tracking-widest bg-gray-50 px-2 py-1 rounded-md">
-            Cloud Sync
+            {tr.memory.cloudSync}
           </span>
         </div>
         
@@ -79,8 +81,8 @@ const MemoryCard = () => {
               <Upload size={22} className="hidden sm:block" strokeWidth={2.5} />
             </div>
             <div className="text-center px-4">
-              <p className="text-[#1A1C1E] text-[13px] sm:text-sm font-black tracking-tight">Fayl yuklash</p>
-              <p className="text-[#8E949A] text-[9px] font-bold uppercase tracking-widest mt-0.5 sm:mt-1 hidden xs:block">Drag & Drop fayllarni shu yerga</p>
+              <p className="text-[#1A1C1E] text-[13px] sm:text-sm font-black tracking-tight">{tr.memory.upload}</p>
+              <p className="text-[#8E949A] text-[9px] font-bold uppercase tracking-widest mt-0.5 sm:mt-1 hidden xs:block">{tr.memory.uploadDrag}</p>
             </div>
             
             {/* Animated Plus Icon */}

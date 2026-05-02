@@ -29,10 +29,12 @@ import PaymentCard from '@/components/PaymentCard';
 import SecurityItem from '@/components/SecurityItem';
 import { useAuth } from '@/lib/contexts/auth-context';
 import { cn } from '@/lib/utils';
+import { useT } from '@/lib/hooks/useT';
 
 export default function AkkauntPage() {
   const router = useRouter();
   const { user, isLoading, clearAuth } = useAuth();
+  const tr = useT();
   const [activeFilter, setActiveFilter] = useState('Hammasi');
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -54,16 +56,22 @@ export default function AkkauntPage() {
     );
   }
 
-  const documents = [
-    { title: 'Pasport', subtitle: 'Hujjat • 2024-01-15', icon: FileText, iconBg: 'bg-blue-50', iconColor: 'text-blue-500' },
-    { title: 'Tibbiy karta', subtitle: 'Tibbiyot • 2024-03-20', icon: Heart, iconBg: 'bg-rose-50', iconColor: 'text-rose-500' },
-    { title: 'Haydovchilik guvohnomasi', subtitle: 'Hujjat • 2023-11-05', icon: CreditCard, iconBg: 'bg-orange-50', iconColor: 'text-orange-500' },
-    { title: 'Sug\'urta polisi', subtitle: 'Moliya • 2024-06-01', icon: Shield, iconBg: 'bg-emerald-50', iconColor: 'text-emerald-500' },
-    { title: 'Diplom', subtitle: 'Ta\'lim • 2020-07-15', icon: File, iconBg: 'bg-purple-50', iconColor: 'text-purple-500' }
+  const DOC_DATA = [
+    { titleKey: 'passport' as const, catKey: 'Hujjat',   date: '2024-01-15', icon: FileText,  iconBg: 'bg-blue-50',    iconColor: 'text-blue-500' },
+    { titleKey: 'medCard'  as const, catKey: 'Tibbiyot', date: '2024-03-20', icon: Heart,     iconBg: 'bg-rose-50',    iconColor: 'text-rose-500' },
+    { titleKey: 'license'  as const, catKey: 'Hujjat',   date: '2023-11-05', icon: CreditCard,iconBg: 'bg-orange-50',  iconColor: 'text-orange-500' },
+    { titleKey: 'insurance'as const, catKey: 'Moliya',   date: '2024-06-01', icon: Shield,    iconBg: 'bg-emerald-50', iconColor: 'text-emerald-500' },
+    { titleKey: 'diploma'  as const, catKey: "Ta'lim",   date: '2020-07-15', icon: File,      iconBg: 'bg-purple-50',  iconColor: 'text-purple-500' },
   ];
 
+  const documents = DOC_DATA.map(d => ({
+    ...d,
+    title:    tr.akkaunt.docTitles[d.titleKey],
+    subtitle: `${tr.akkaunt.docCats[d.catKey as keyof typeof tr.akkaunt.docCats]} • ${d.date}`,
+  }));
+
   const filteredDocuments = documents.filter(doc => {
-    const matchesFilter = activeFilter === 'Hammasi' || doc.subtitle.includes(activeFilter);
+    const matchesFilter = activeFilter === 'Hammasi' || doc.catKey === activeFilter;
     const matchesSearch = doc.title.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesFilter && matchesSearch;
   });
@@ -74,10 +82,10 @@ export default function AkkauntPage() {
   ];
 
   const securityItems = [
-    { title: 'Biometrik kirish', subtitle: 'Face ID / Touch ID', icon: Fingerprint, iconBg: 'bg-emerald-50', iconColor: 'text-emerald-500' },
-    { title: 'Parol o\'zgartirish', subtitle: 'Oxirgi o\'zgarish: 30 kun oldin', icon: KeyRound, iconBg: 'bg-orange-50', iconColor: 'text-orange-500' },
-    { title: 'Ulangan qurilmalar', subtitle: 'iPhone 15, Apple Watch', icon: Smartphone, iconBg: 'bg-blue-50', iconColor: 'text-blue-500' },
-    { title: 'Wearable Sync', subtitle: 'Apple Watch, Mi Band', icon: Watch, iconBg: 'bg-teal-50', iconColor: 'text-teal-500' }
+    { title: tr.akkaunt.secItems.biometric.title, subtitle: tr.akkaunt.secItems.biometric.sub, icon: Fingerprint, iconBg: 'bg-emerald-50', iconColor: 'text-emerald-500' },
+    { title: tr.akkaunt.secItems.password.title,  subtitle: tr.akkaunt.secItems.password.sub,  icon: KeyRound,    iconBg: 'bg-orange-50', iconColor: 'text-orange-500' },
+    { title: tr.akkaunt.secItems.devices.title,   subtitle: tr.akkaunt.secItems.devices.sub,   icon: Smartphone,  iconBg: 'bg-blue-50',   iconColor: 'text-blue-500' },
+    { title: tr.akkaunt.secItems.wearable.title,  subtitle: tr.akkaunt.secItems.wearable.sub,  icon: Watch,       iconBg: 'bg-teal-50',   iconColor: 'text-teal-500' },
   ];
 
   const containerVariants = {
@@ -141,7 +149,7 @@ export default function AkkauntPage() {
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Hujjat qidirish..."
+                        placeholder={tr.akkaunt.searchDoc}
                         className="flex-1 bg-transparent border-none outline-none text-[13px] font-bold text-slate-900 placeholder:text-slate-300 placeholder:font-medium"
                       />
                       <button 
@@ -159,7 +167,7 @@ export default function AkkauntPage() {
                       exit={{ opacity: 0, x: -10 }}
                       className="text-slate-900 text-sm sm:text-base font-black tracking-widest uppercase"
                     >
-                      Hujjatlar
+                      {tr.akkaunt.documents}
                     </motion.h2>
                   )}
                 </AnimatePresence>
@@ -178,18 +186,18 @@ export default function AkkauntPage() {
 
               {/* Filter Chips - More Compact & Premium */}
               <div className="flex items-center gap-2 overflow-x-auto pb-4 no-scrollbar mb-1 px-1">
-                {['Hammasi', 'Hujjat', 'Tibbiyot', 'Moliya', 'Ta\'lim'].map((filter) => (
+                {['Hammasi', 'Hujjat', 'Tibbiyot', 'Moliya', "Ta'lim"].map((key, i) => (
                   <button
-                    key={filter}
-                    onClick={() => setActiveFilter(filter)}
+                    key={key}
+                    onClick={() => setActiveFilter(key)}
                     className={cn(
                       "px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-[0.12em] transition-all duration-500 border whitespace-nowrap",
-                      activeFilter === filter 
-                        ? "bg-slate-900 text-white border-slate-900 shadow-[0_10px_20px_rgba(15,23,42,0.15)] scale-105" 
+                      activeFilter === key
+                        ? "bg-slate-900 text-white border-slate-900 shadow-[0_10px_20px_rgba(15,23,42,0.15)] scale-105"
                         : "bg-white/60 text-slate-400 border-white hover:border-slate-200"
                     )}
                   >
-                    {filter}
+                    {tr.akkaunt.docFilters[i]}
                   </button>
                 ))}
               </div>
@@ -200,7 +208,7 @@ export default function AkkauntPage() {
                 ))}
                 {filteredDocuments.length === 0 && (
                   <div className="py-10 text-center text-gray-400 text-xs font-bold uppercase tracking-widest">
-                    Hujjat topilmadi
+                    {tr.akkaunt.noDocuments}
                   </div>
                 )}
               </div>
@@ -209,8 +217,8 @@ export default function AkkauntPage() {
             {/* Payment Cards Section */}
             <div className="px-4 sm:px-5 mb-8 sm:mb-10">
               <div className="flex items-center justify-between mb-4 sm:mb-6 px-1">
-                <h2 className="text-[#1A1C1E] text-base sm:text-lg font-black tracking-tight uppercase">To&apos;lov Kartalari</h2>
-                <button className="text-teal-600 text-[11px] sm:text-xs font-black uppercase tracking-widest hover:underline">Hammasi</button>
+                <h2 className="text-[#1A1C1E] text-base sm:text-lg font-black tracking-tight uppercase">{tr.akkaunt.paymentCards}</h2>
+                <button className="text-teal-600 text-[11px] sm:text-xs font-black uppercase tracking-widest hover:underline">{tr.akkaunt.viewAll}</button>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mb-5 sm:mb-6">
                 {paymentCards.map((card, idx) => (
@@ -229,14 +237,14 @@ export default function AkkauntPage() {
                   <Plus size={20} className="hidden sm:block" strokeWidth={3} />
                 </div>
                 <span className="text-gray-500 text-[10px] sm:text-[11px] font-black uppercase tracking-widest group-hover:text-teal-600 transition-colors">
-                  Karta qo&apos;shish
+                  {tr.akkaunt.addCard}
                 </span>
               </motion.button>
               </div>
 
             {/* Security Section */}
             <div className="px-4 sm:px-5 mb-8 sm:mb-10">
-              <h2 className="text-[#1A1C1E] text-base sm:text-lg font-black tracking-tight uppercase mb-4 sm:mb-6 px-1">Xavfsizlik</h2>
+              <h2 className="text-[#1A1C1E] text-base sm:text-lg font-black tracking-tight uppercase mb-4 sm:mb-6 px-1">{tr.akkaunt.security}</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4">
                 {securityItems.map((item, idx) => (
                   <SecurityItem key={idx} {...item} />
@@ -263,7 +271,7 @@ export default function AkkauntPage() {
                     <LogOut size={18} className="hidden sm:block" strokeWidth={2.5} />
                   </div>
                   <span className="text-red-500 text-xs sm:text-sm font-black tracking-tight group-hover:text-red-600 uppercase">
-                    Hisobdan chiqish
+                    {tr.akkaunt.logout}
                   </span>
                 </div>
               </motion.button>

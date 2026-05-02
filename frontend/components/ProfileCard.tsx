@@ -4,6 +4,7 @@ import React, { useState, useRef } from 'react';
 import { User, Camera, ShieldCheck, Sparkles, Pencil, Check, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { useT } from '@/lib/hooks/useT';
 
 interface ProfileCardProps {
   name: string;
@@ -11,6 +12,7 @@ interface ProfileCardProps {
 }
 
 const ProfileCard = ({ name: initialName, email }: ProfileCardProps) => {
+  const tr = useT();
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(initialName || 'Usmon Alimov');
   const [profileImage, setProfileImage] = useState<string | null>(null);
@@ -119,7 +121,7 @@ const ProfileCard = ({ name: initialName, email }: ProfileCardProps) => {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-lg font-bold text-[#1A1C1E] focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
-                    placeholder="Ism va Familiya"
+                    placeholder={tr.profile.namePh}
                   />
                   <div className="flex items-center justify-center sm:justify-start gap-2">
                     <button
@@ -127,7 +129,7 @@ const ProfileCard = ({ name: initialName, email }: ProfileCardProps) => {
                       className="flex items-center gap-1.5 px-3 py-1.5 bg-teal-500 text-white rounded-lg text-xs font-bold hover:bg-teal-600 transition-colors shadow-lg shadow-teal-500/20"
                     >
                       <Check size={14} strokeWidth={3} />
-                      <span>Saqlash</span>
+                      <span>{tr.profile.save}</span>
                     </button>
                     <button
                       onClick={() => {
@@ -137,7 +139,7 @@ const ProfileCard = ({ name: initialName, email }: ProfileCardProps) => {
                       className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 text-gray-500 rounded-lg text-xs font-bold hover:bg-gray-200 transition-colors"
                     >
                       <X size={14} strokeWidth={3} />
-                      <span>Bekor qilish</span>
+                      <span>{tr.profile.cancel}</span>
                     </button>
                   </div>
                 </motion.div>

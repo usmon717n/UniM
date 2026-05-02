@@ -4,6 +4,7 @@ import React from 'react';
 import { Star, ExternalLink, LucideIcon, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { useT } from '@/lib/hooks/useT';
 
 interface ProductCardProps {
   name: string;
@@ -24,6 +25,7 @@ const ProductCard = ({
   gradient,
   colorClass
 }: ProductCardProps) => {
+  const tr = useT();
   return (
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
@@ -86,7 +88,7 @@ const ProductCard = ({
               whileTap={{ scale: 0.95 }}
               className="bg-gradient-to-r from-teal-500 to-blue-600 text-white px-4 py-2 sm:px-7 sm:py-3.5 rounded-full flex items-center gap-2 text-[11px] sm:text-[12px] font-black tracking-tight shadow-[0_10px_20px_rgba(20,184,166,0.2)] hover:shadow-[0_15px_30px_rgba(20,184,166,0.3)] transition-all duration-300"
             >
-              <span>Ochish</span>
+              <span>{tr.common.open}</span>
               <ExternalLink size={13} className="sm:hidden" strokeWidth={3} />
               <ExternalLink size={15} className="hidden sm:block" strokeWidth={3} />
             </motion.button>

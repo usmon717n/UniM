@@ -18,6 +18,7 @@ import {
 } from '@/lib/api/plan-tasks';
 import { useAuth } from '@/lib/contexts/auth-context';
 import { useAuthModal } from '@/lib/contexts/auth-modal-context';
+import { useT } from '@/lib/hooks/useT';
 
 const TYPE_STYLES: Record<
   PlanTaskType,
@@ -37,6 +38,7 @@ const TYPE_STYLES: Record<
 const PlanSection = () => {
   const { token } = useAuth();
   const { openModal } = useAuthModal();
+  const tr = useT();
   const [plans, setPlans] = useState<PlanTask[]>([]);
   const [progressPercent, setProgressPercent] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -69,7 +71,7 @@ const PlanSection = () => {
       setPlans(data.tasks);
       setProgressPercent(data.progress);
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Rejalarni yuklab bo\'lmadi');
+      setError(e instanceof Error ? e.message : tr.plan.errors.loadFailed);
     } finally {
       setIsLoading(false);
     }
@@ -165,7 +167,7 @@ const PlanSection = () => {
       // Rollback on error
       setPlans(oldPlans);
       setProgressPercent(oldProgress);
-      setError(e instanceof Error ? e.message : 'Vazifani yangilab bo\'lmadi');
+      setError(e instanceof Error ? e.message : tr.plan.errors.updateFailed);
     }
   };
 
@@ -194,11 +196,11 @@ const PlanSection = () => {
   const handleCreateSubmit = async () => {
     if (!requireAuth() || !token) return;
     if (!newTitle.trim()) {
-      setCreateError('Vazifa nomini kiriting');
+      setCreateError(tr.plan.errors.titleRequired);
       return;
     }
     if (!/^([01]\d|2[0-3]):([0-5]\d)$/.test(newTime)) {
-      setCreateError('Vaqt formati noto‘g‘ri. Masalan: 12:00');
+      setCreateError(tr.plan.errors.timeFormat);
       return;
     }
 
@@ -216,7 +218,7 @@ const PlanSection = () => {
       setIsCreateOpen(false);
       await loadTodayPlan();
     } catch (e) {
-      setCreateError(e instanceof Error ? e.message : 'Yangi vazifa qo\'shib bo\'lmadi');
+      setCreateError(e instanceof Error ? e.message : tr.plan.errors.createFailed);
     } finally {
       setIsCreating(false);
     }
@@ -230,7 +232,7 @@ const PlanSection = () => {
       const data = await apiGetPlanTasks(token);
       setAllTasks(data.items);
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Rejalarni yuklab bo\'lmadi');
+      setError(e instanceof Error ? e.message : tr.plan.errors.loadFailed);
     }
   }, [token]);
 
@@ -242,14 +244,14 @@ const PlanSection = () => {
 
   const handleDelete = async (task: PlanTask) => {
     if (!requireAuth() || !token) return;
-    const ok = window.confirm(`"${task.title}" vazifasini o'chiraymi?`);
+    const ok = window.confirm(tr.plan.deleteConfirm(task.title));
     if (!ok) return;
 
     try {
       await apiDeletePlanTask(token, task.id);
       await Promise.all([loadTodayPlan(), loadAllTasks()]);
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Vazifani o\'chirib bo\'lmadi');
+      setError(e instanceof Error ? e.message : tr.plan.errors.deleteFailed);
     }
   };
 
@@ -263,11 +265,11 @@ const PlanSection = () => {
   const handleEditSave = async () => {
     if (!requireAuth() || !token || !editingTask) return;
     if (!editTitle.trim()) {
-      setError('Vazifa nomini kiriting');
+      setError(tr.plan.errors.titleRequired);
       return;
     }
     if (!/^([01]\d|2[0-3]):([0-5]\d)$/.test(editTime)) {
-      setError('Vaqt formati noto‘g‘ri. Masalan: 12:00');
+      setError(tr.plan.errors.timeFormat);
       return;
     }
 
@@ -280,7 +282,7 @@ const PlanSection = () => {
       setEditingTask(null);
       await Promise.all([loadTodayPlan(), loadAllTasks()]);
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Vazifani saqlab bo\'lmadi');
+      setError(e instanceof Error ? e.message : tr.plan.errors.saveFailed);
     } finally {
       setIsSavingEdit(false);
     }
@@ -294,18 +296,18 @@ const PlanSection = () => {
           <div className="space-y-1.5">
             <div className="flex items-center gap-2.5">
               <h2 className="text-[#0F172A] text-2xl font-black tracking-tight">
-                Mening Rejam
+                {tr.plan.title}
               </h2>
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 className="flex items-center gap-1.5 bg-teal-500/10 backdrop-blur-md px-3 py-1 rounded-full border border-teal-500/20"
               >
                 <Sparkles size={12} className="text-teal-600 animate-pulse" />
-                <span className="text-[10px] font-black text-teal-700 uppercase tracking-widest">Bugun</span>
+                <span className="text-[10px] font-black text-teal-700 uppercase tracking-widest">{tr.plan.today}</span>
               </motion.div>
             </div>
-            <p className="text-[#64748B] text-[13px] font-bold tracking-tight">Kundalik vazifalar va habit-treker</p>
+            <p className="text-[#64748B] text-[13px] font-bold tracking-tight">{tr.plan.subtitle}</p>
           </div>
           
           <motion.button
@@ -313,7 +315,7 @@ const PlanSection = () => {
             onClick={() => void openAllModal()}
             className="flex items-center gap-2 px-4 py-2 bg-white/40 backdrop-blur-md rounded-2xl border border-white/60 text-teal-600 hover:bg-white/60 transition-all group shadow-sm"
           >
-            <span className="text-[13px] font-black uppercase tracking-wider">Barchasi</span>
+            <span className="text-[13px] font-black uppercase tracking-wider">{tr.plan.viewAll}</span>
             <ArrowRight size={16} className="transition-transform group-hover:translate-x-0.5" />
           </motion.button>
         </div>
@@ -332,10 +334,10 @@ const PlanSection = () => {
               <div className="space-y-0.5 sm:space-y-1">
                 <span className="text-[10px] sm:text-[11px] font-black text-slate-400 uppercase tracking-widest">Progress</span>
                 <h4 className="text-slate-900 font-black text-sm sm:text-lg truncate max-w-[150px] sm:max-w-none">
-                  {!token ? "Rejalaringizni ko'rish uchun kiring" :
-                   progressPercent === 100 ? "Hammasi tayyor!" : 
-                   progressPercent > 50 ? "Yarmiga yetdingiz!" :
-                   progressPercent > 0 ? "Zo'r boshlanish!" : "Vaqtni unumli sarflang"}
+                  {!token ? tr.plan.loginPrompt :
+                   progressPercent === 100 ? tr.plan.allDone :
+                   progressPercent > 50 ? tr.plan.halfway :
+                   progressPercent > 0 ? tr.plan.greatStart : tr.plan.useTime}
                 </h4>
               </div>
               <div className="flex items-baseline gap-0.5">
@@ -382,7 +384,7 @@ const PlanSection = () => {
       <div className="flex overflow-x-auto gap-3 sm:gap-4 px-4 sm:px-5 pb-6 no-scrollbar snap-x snap-mandatory">
         {isLoading && plans.length === 0 && (
           <div className="flex-shrink-0 w-[160px] sm:w-[200px] snap-start rounded-[24px] sm:rounded-[32px] p-4 sm:p-5 bg-white border border-white text-sm text-gray-500">
-            Yuklanmoqda...
+            {tr.plan.loading}
           </div>
         )}
 
@@ -395,16 +397,16 @@ const PlanSection = () => {
             <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-2xl bg-teal-50 text-teal-600">
               <Sparkles size={20} strokeWidth={2.2} />
             </div>
-            <h3 className="text-[15px] font-black text-slate-900">Rejalaringiz yopiq</h3>
+            <h3 className="text-[15px] font-black text-slate-900">{tr.plan.locked}</h3>
             <p className="mt-1 text-[12px] font-semibold leading-relaxed text-slate-500">
-              Vazifalarni ko'rish va boshqarish uchun hisobga kiring.
+              {tr.plan.lockedDesc}
             </p>
           </motion.button>
         )}
 
         {token && !isLoading && !hasTasks && (
           <div className="flex-shrink-0 w-[240px] snap-start rounded-[24px] sm:rounded-[32px] p-4 sm:p-5 bg-white border border-white text-sm text-gray-500">
-            Bugun uchun vazifalar topilmadi.
+            {tr.plan.noTasks}
           </div>
         )}
 
@@ -516,7 +518,7 @@ const PlanSection = () => {
             <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-white group-hover:text-teal-500 shadow-sm transition-all">
               <Plus size={20} strokeWidth={2.2} />
             </div>
-            <span className="text-[11px] font-bold text-gray-400 group-hover:text-teal-600 uppercase tracking-widest">Yangi</span>
+            <span className="text-[11px] font-bold text-gray-400 group-hover:text-teal-600 uppercase tracking-widest">{tr.plan.addNew}</span>
           </motion.div>
         )}
       </div>
@@ -556,8 +558,8 @@ const PlanSection = () => {
 
               <div className="mb-5 flex items-start justify-between gap-4">
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-teal-600">Mening Rejam</p>
-                  <h3 className="mt-1 text-xl font-black text-slate-900">Yangi Vazifa Qo‘shish</h3>
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-teal-600">{tr.plan.title}</p>
+                  <h3 className="mt-1 text-xl font-black text-slate-900">{tr.plan.addTitle}</h3>
                 </div>
                 <button
                   type="button"
@@ -580,21 +582,21 @@ const PlanSection = () => {
 
               <div className="space-y-4">
                 <label className="block">
-                  <span className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-500">Vazifa nomi</span>
+                  <span className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-500">{tr.plan.taskName}</span>
                   <input
                     value={newTitle}
                     onChange={(e) => {
                       setNewTitle(e.target.value);
                       setCreateError(null);
                     }}
-                    placeholder="Masalan: Omega-3"
+                    placeholder={tr.plan.placeholder}
                     className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 outline-none transition focus:border-teal-400 focus:ring-4 focus:ring-teal-100"
                   />
                 </label>
 
                 {/* Category/Icon Selector */}
                 <div className="space-y-2">
-                  <span className="block text-xs font-bold uppercase tracking-wider text-slate-500">Turkum / Icon</span>
+                  <span className="block text-xs font-bold uppercase tracking-wider text-slate-500">{tr.plan.category}</span>
                   <div className="flex flex-wrap gap-2">
                     {(Object.keys(TYPE_STYLES) as PlanTaskType[]).map((type) => {
                       const style = TYPE_STYLES[type];
@@ -622,10 +624,7 @@ const PlanSection = () => {
                             "text-[10px] font-black uppercase tracking-wider",
                             isSelected ? "text-slate-900" : "text-slate-500"
                           )}>
-                            {type === 'MEDICINE' ? 'Dori' : 
-                             type === 'WATER' ? 'Suv' : 
-                             type === 'SPORT' ? 'Sport' : 
-                             type === 'VITAMIN' ? 'Vitamin' : 'Boshqa'}
+                            {tr.plan.types[type]}
                           </span>
                         </motion.button>
                       );
@@ -636,7 +635,7 @@ const PlanSection = () => {
                 <label className="block">
                   <span className="mb-1.5 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500">
                     <Clock3 size={13} />
-                    Vaqt
+                    {tr.plan.time}
                   </span>
                   <input
                     type="time"
@@ -657,7 +656,7 @@ const PlanSection = () => {
                   onClick={closeCreateModal}
                   className="flex-1 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold text-slate-600 transition hover:bg-slate-50"
                 >
-                  Bekor qilish
+                  {tr.plan.cancel}
                 </motion.button>
                 <motion.button
                   whileTap={{ scale: 0.98 }}
@@ -666,7 +665,7 @@ const PlanSection = () => {
                   onClick={() => void handleCreateSubmit()}
                   className="flex-1 rounded-2xl bg-gradient-to-r from-teal-500 to-emerald-500 px-4 py-3 text-sm font-black text-white shadow-[0_12px_24px_rgba(16,185,129,0.25)] transition hover:from-teal-600 hover:to-emerald-600 disabled:cursor-not-allowed disabled:opacity-70"
                 >
-                  {isCreating ? 'Saqlanmoqda...' : 'Saqlash'}
+                  {isCreating ? tr.plan.saving : tr.plan.save}
                 </motion.button>
               </div>
             </motion.div>
@@ -684,7 +683,7 @@ const PlanSection = () => {
           />
           <div className="relative w-full max-w-2xl rounded-3xl border border-white/70 bg-white p-5 shadow-[0_30px_80px_rgba(2,132,199,0.18)]">
             <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-lg font-black text-slate-900">Barcha Rejalar</h3>
+              <h3 className="text-lg font-black text-slate-900">{tr.plan.allPlans}</h3>
               <button onClick={() => setIsAllOpen(false)} className="rounded-xl p-2 text-slate-500 hover:bg-slate-100">
                 <X size={18} />
               </button>
@@ -693,7 +692,7 @@ const PlanSection = () => {
             <div className="max-h-[60vh] space-y-2 overflow-y-auto pr-1">
               {allTasks.length === 0 && (
                 <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-500">
-                  Rejalar yo‘q.
+                  {tr.plan.noPlans}
                 </div>
               )}
               {allTasks.map((task) => (
@@ -708,14 +707,14 @@ const PlanSection = () => {
                     <button
                       onClick={() => openEdit(task)}
                       className="rounded-xl border border-slate-200 p-2 text-slate-600 hover:bg-slate-50"
-                      title="Tahrirlash"
+                      title={tr.plan.editTask}
                     >
                       <Pencil size={16} />
                     </button>
                     <button
                       onClick={() => void handleDelete(task)}
                       className="rounded-xl border border-red-200 p-2 text-red-600 hover:bg-red-50"
-                      title="O'chirish"
+                      title={tr.plan.deleteBtn}
                     >
                       <Trash2 size={16} />
                     </button>
@@ -736,10 +735,10 @@ const PlanSection = () => {
             className="absolute inset-0 bg-slate-900/45 backdrop-blur-sm"
           />
           <div className="relative w-full max-w-md rounded-3xl border border-white/60 bg-white p-6 shadow-[0_30px_80px_rgba(2,132,199,0.18)]">
-            <h3 className="text-lg font-black text-slate-900">Vazifani Tahrirlash</h3>
+            <h3 className="text-lg font-black text-slate-900">{tr.plan.editTask}</h3>
             <div className="mt-4 space-y-4">
               <label className="block">
-                <span className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-500">Vazifa nomi</span>
+                <span className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-500">{tr.plan.taskName}</span>
                 <input
                   value={editTitle}
                   onChange={(e) => setEditTitle(e.target.value)}
@@ -747,7 +746,7 @@ const PlanSection = () => {
                 />
               </label>
               <label className="block">
-                <span className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-500">Vaqt</span>
+                <span className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-500">{tr.plan.time}</span>
                 <input
                   type="time"
                   value={editTime}
@@ -762,7 +761,7 @@ const PlanSection = () => {
                 onClick={() => setEditingTask(null)}
                 className="flex-1 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold text-slate-600 transition hover:bg-slate-50"
               >
-                Bekor qilish
+                {tr.plan.cancel}
               </button>
               <button
                 type="button"
@@ -770,7 +769,7 @@ const PlanSection = () => {
                 onClick={() => void handleEditSave()}
                 className="flex-1 rounded-2xl bg-gradient-to-r from-teal-500 to-emerald-500 px-4 py-3 text-sm font-black text-white shadow-[0_12px_24px_rgba(16,185,129,0.25)] transition hover:from-teal-600 hover:to-emerald-600 disabled:cursor-not-allowed disabled:opacity-70"
               >
-                {isSavingEdit ? 'Saqlanmoqda...' : 'Saqlash'}
+                {isSavingEdit ? tr.plan.saving : tr.plan.save}
               </button>
             </div>
           </div>
@@ -809,12 +808,12 @@ const PlanSection = () => {
               </div>
               <div className="mb-1.5 sm:mb-2 flex items-center justify-center gap-2">
                 <h4 className="text-xl sm:text-2xl font-black text-slate-900 leading-tight">
-                  Tabriklaymiz!
+                  {tr.plan.congrats}
                 </h4>
                 <Sparkles size={20} className="text-amber-500" strokeWidth={2.4} />
               </div>
               <p className="text-slate-500 font-bold text-[12px] sm:text-sm">
-                Bugun barcha rejalaringizni 100% bajardingiz!
+                {tr.plan.allComplete}
               </p>
               <div className="mt-4 sm:mt-6 flex items-center gap-2">
                 <div className="h-1 w-10 sm:w-12 bg-teal-500 rounded-full opacity-50" />

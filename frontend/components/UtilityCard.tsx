@@ -1,11 +1,14 @@
+'use client';
+
 import React from 'react';
 import { LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useT } from '@/lib/hooks/useT';
 
 interface UtilityCardProps {
   title: string;
   subtitle: string;
-  status: 'To\'langan' | 'Qarzdor';
+  status: 'paid' | 'debt';
   icon: LucideIcon;
   iconBg: string;
   iconColor: string;
@@ -21,6 +24,8 @@ const UtilityCard = ({
   iconColor,
   showPayButton
 }: UtilityCardProps) => {
+  const tr = useT();
+
   return (
     <div className="bg-white rounded-3xl p-4 shadow-sm border border-gray-50 flex items-center justify-between mb-3">
       <div className="flex items-center gap-4">
@@ -32,9 +37,9 @@ const UtilityCard = ({
             <span className="text-[#1A1C1E] text-[15px] font-bold">{title}</span>
             <span className={cn(
               "text-[9px] font-bold px-2 py-0.5 rounded-full",
-              status === 'To\'langan' ? "bg-emerald-50 text-emerald-500" : "bg-red-50 text-red-500"
+              status === 'paid' ? "bg-emerald-50 text-emerald-500" : "bg-red-50 text-red-500"
             )}>
-              {status}
+              {status === 'paid' ? tr.common.paid : tr.common.debt}
             </span>
           </div>
           <span className="text-[#8E949A] text-[11px] font-medium">{subtitle}</span>
@@ -43,7 +48,7 @@ const UtilityCard = ({
 
       {showPayButton && (
         <button className="bg-gradient-to-r from-[#2D3A5D] to-[#0E8388] text-white text-[11px] font-bold px-5 py-2.5 rounded-xl shadow-lg shadow-teal-500/10 active:scale-95 transition-transform">
-          To&apos;lash
+          {tr.common.pay}
         </button>
       )}
     </div>

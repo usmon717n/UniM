@@ -1,6 +1,9 @@
+'use client';
+
 import React from 'react';
 import { Pin } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useT } from '@/lib/hooks/useT';
 
 interface ChatCardProps {
   title: string;
@@ -27,6 +30,7 @@ const ChatCard = ({
   bgColor = "bg-white",
   borderColor = "border-gray-50"
 }: ChatCardProps) => {
+  const tr = useT();
   return (
     <div className={cn(
       "rounded-[24px] p-4 shadow-sm border flex items-center gap-4 mb-3 active:scale-[0.98] transition-all cursor-pointer",
@@ -49,7 +53,7 @@ const ChatCard = ({
           {isPinned && (
             <div className="flex items-center gap-1 border border-emerald-500/30 bg-emerald-50 text-emerald-600 px-1.5 py-0.5 rounded-md">
               <Pin size={10} className="fill-current" />
-              <span className="text-[9px] font-bold">Qadoqlangan</span>
+              <span className="text-[9px] font-bold">{tr.common.pinned}</span>
             </div>
           )}
           

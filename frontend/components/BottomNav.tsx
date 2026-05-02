@@ -6,15 +6,17 @@ import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { useT } from '@/lib/hooks/useT';
 
 const BottomNav = () => {
   const pathname = usePathname();
+  const tr = useT();
 
   const navItems = [
-    { name: 'Asosiy', icon: Home, path: '/' },
-    { name: 'Xizmat', icon: UserCog, path: '/mutaxassis' },
-    { name: 'Market', icon: ShoppingBag, path: '/mahsulot' },
-    { name: 'Profil', icon: User, path: '/akkaunt' }
+    { name: tr.nav.home,    icon: Home,      path: '/' },
+    { name: tr.nav.service, icon: UserCog,   path: '/mutaxassis' },
+    { name: tr.nav.market,  icon: ShoppingBag, path: '/mahsulot' },
+    { name: tr.nav.profile, icon: User,      path: '/akkaunt' },
   ];
 
   return (

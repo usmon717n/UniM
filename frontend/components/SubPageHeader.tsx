@@ -8,15 +8,16 @@ import BrandLogo from '@/components/BrandLogo';
 import { useState, useRef, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import LanguageFlag from '@/components/LanguageFlag';
+import { useLang, type LangCode } from '@/lib/contexts/language-context';
 
-const languages = [
+const languages: { code: LangCode; name: string }[] = [
   { code: 'uz', name: "O'zbekcha" },
   { code: 'ru', name: 'Русский' },
   { code: 'en', name: 'English' },
-] as const;
+];
 
 const SubPageHeader = () => {
-  const [lang, setLang] = useState('uz');
+  const { lang, setLang } = useLang();
   const [isLangOpen, setIsLangOpen] = useState(false);
   const langRef = useRef<HTMLDivElement>(null);
 
@@ -101,7 +102,7 @@ const SubPageHeader = () => {
               {languages.map((l) => (
                 <button
                   key={l.code}
-                  onClick={() => { setLang(l.code); setIsLangOpen(false); }}
+                  onClick={() => { setLang(l.code as LangCode); setIsLangOpen(false); }}
                   className="w-full flex items-center justify-between px-4 py-3 hover:bg-teal-50 transition-colors group"
                 >
                   <div className="flex items-center gap-3">

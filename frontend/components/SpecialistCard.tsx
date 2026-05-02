@@ -4,6 +4,7 @@ import React from 'react';
 import { Star, ExternalLink, LucideIcon, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { useT } from '@/lib/hooks/useT';
 
 interface SpecialistCardProps {
   name: string;
@@ -24,6 +25,7 @@ const SpecialistCard = ({
   gradient,
   colorClass
 }: SpecialistCardProps) => {
+  const tr = useT();
   return (
     <motion.div 
       whileHover={{ y: -6, scale: 1.01 }}
@@ -75,7 +77,7 @@ const SpecialistCard = ({
               whileTap={{ scale: 0.95 }}
               className="bg-[#1A1C1E] text-white px-6 py-3 rounded-2xl flex items-center gap-2 text-[12px] font-black tracking-tight shadow-xl hover:bg-teal-600 transition-all duration-300"
             >
-              <span>Ochish</span>
+              <span>{tr.common.open}</span>
               <ExternalLink size={14} strokeWidth={3} />
             </motion.button>
           </div>

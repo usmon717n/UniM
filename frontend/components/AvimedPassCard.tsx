@@ -4,9 +4,11 @@ import React, { useState } from 'react';
 import { QrCode, ShieldCheck, Eye, EyeOff, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { useT } from '@/lib/hooks/useT';
 
 const AvimedPassCard = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const tr = useT();
 
   return (
     <motion.div 
@@ -33,7 +35,7 @@ const AvimedPassCard = () => {
           </div>
           <div className="flex items-center gap-1.5 bg-emerald-50 text-emerald-600 px-3 py-1.5 rounded-full border border-emerald-100/50">
             <ShieldCheck size={12} strokeWidth={3} />
-            <span className="text-[10px] font-black uppercase tracking-wider">Active ID</span>
+            <span className="text-[10px] font-black uppercase tracking-wider">{tr.avimedPass.activeId}</span>
           </div>
         </div>
 
@@ -88,12 +90,12 @@ const AvimedPassCard = () => {
           <div className="absolute inset-0 bg-gradient-to-r from-teal-500 to-emerald-600 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-500" />
           <div className="relative z-10 flex items-center gap-2.5">
             {isVisible ? <EyeOff size={18} /> : <Eye size={18} />}
-            <span className="text-sm font-black tracking-tight">{isVisible ? "Hide Pass" : "Show Pass"}</span>
+            <span className="text-sm font-black tracking-tight">{isVisible ? tr.avimedPass.hidePass : tr.avimedPass.showPass}</span>
           </div>
         </button>
 
         <p className="mt-5 sm:mt-6 text-[#8E949A] text-[10px] sm:text-[11px] font-bold text-center leading-relaxed max-w-[220px] uppercase tracking-wider opacity-60">
-          Emergency medical access QR signature
+          {tr.avimedPass.qrDesc}
         </p>
       </div>
 

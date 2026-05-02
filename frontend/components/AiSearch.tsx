@@ -6,25 +6,16 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/lib/contexts/auth-context';
 import { useAuthModal } from '@/lib/contexts/auth-modal-context';
 import { cn } from '@/lib/utils';
+import { useT } from '@/lib/hooks/useT';
 
-const suggestions = [
-  "Plumber kerak...",
-  "Doktor topib ber...",
-  "Uy ijarasi...",
-  "Yaqin atrofdagi dorixonalar...",
-  "Ta'mir xizmatlari..."
-];
-
-const quickSuggestions = [
-  { label: 'Ijaraga uy', icon: Home },
-  { label: 'Usta kerak', icon: Wrench },
-  { label: 'Shifokor', icon: Stethoscope },
-  { label: 'Huquqiy yordam', icon: Scale },
-];
+const QUICK_ICONS = [Home, Wrench, Stethoscope, Scale];
 
 const AiSearch = () => {
   const { user } = useAuth();
   const { openModal } = useAuthModal();
+  const tr = useT();
+  const suggestions = tr.search.suggestions;
+  const quickSuggestions = tr.search.quickLabels.map((label, i) => ({ label, icon: QUICK_ICONS[i] }));
   const [suggestionIndex, setSuggestionIndex] = useState(0);
   const [isFocused, setIsFocused] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -128,7 +119,7 @@ const AiSearch = () => {
                   className="absolute inset-0 flex items-center px-3 sm:px-4 pointer-events-none truncate"
                 >
                   <span className="text-gray-400 text-[14px] sm:text-[15px] font-medium truncate">
-                    <span className="hidden sm:inline">Avimed AI'dan so'rang: </span>
+                    <span className="hidden sm:inline">{tr.search.placeholder}</span>
                     <span className={cn(
                       "text-teal-600/60 italic",
                       !user && "text-gray-400/60"

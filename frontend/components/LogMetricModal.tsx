@@ -4,6 +4,7 @@ import { useState, useTransition } from 'react';
 import { X, Heart, Footprints, Moon, Loader2, Check } from 'lucide-react';
 import { apiLogMetric, type MetricType } from '@/lib/api/health';
 import { useAuth } from '@/lib/contexts/auth-context';
+import { useT } from '@/lib/hooks/useT';
 
 interface Props {
   isOpen: boolean;
@@ -12,67 +13,26 @@ interface Props {
   onSaved: () => void;
 }
 
-const TABS: {
-  type: MetricType;
-  label: string;
-  unit: string;
-  min: number;
-  max: number;
-  step: string;
-  placeholder: string;
-  icon: React.ElementType;
-  accent: string;
-  bg: string;
-  ring: string;
-}[] = [
-  {
-    type: 'HEART_RATE',
-    label: 'Yurak urishi',
-    unit: 'bpm',
-    min: 30,
-    max: 250,
-    step: '1',
-    placeholder: '72',
-    icon: Heart,
-    accent: 'text-rose-500',
-    bg: 'bg-rose-50',
-    ring: 'focus:ring-rose-500/20 focus:border-rose-400',
-  },
-  {
-    type: 'STEPS',
-    label: 'Qadamlar',
-    unit: 'qadam',
-    min: 0,
-    max: 100000,
-    step: '100',
-    placeholder: '6842',
-    icon: Footprints,
-    accent: 'text-emerald-500',
-    bg: 'bg-emerald-50',
-    ring: 'focus:ring-emerald-500/20 focus:border-emerald-400',
-  },
-  {
-    type: 'SLEEP',
-    label: 'Uyqu',
-    unit: 'soat',
-    min: 0,
-    max: 24,
-    step: '0.5',
-    placeholder: '7.5',
-    icon: Moon,
-    accent: 'text-violet-500',
-    bg: 'bg-violet-50',
-    ring: 'focus:ring-violet-500/20 focus:border-violet-400',
-  },
+const TABS_STATIC = [
+  { type: 'HEART_RATE' as MetricType, unit: 'bpm',  min: 30, max: 250,    step: '1',   placeholder: '72',   icon: Heart,     accent: 'text-rose-500',    bg: 'bg-rose-50',    ring: 'focus:ring-rose-500/20 focus:border-rose-400'     },
+  { type: 'STEPS'      as MetricType, unit: null,   min: 0,  max: 100000, step: '100', placeholder: '6842', icon: Footprints,accent: 'text-emerald-500', bg: 'bg-emerald-50', ring: 'focus:ring-emerald-500/20 focus:border-emerald-400' },
+  { type: 'SLEEP'      as MetricType, unit: null,   min: 0,  max: 24,     step: '0.5', placeholder: '7.5',  icon: Moon,      accent: 'text-violet-500',  bg: 'bg-violet-50',  ring: 'focus:ring-violet-500/20 focus:border-violet-400'   },
 ];
 
 export function LogMetricModal({ isOpen, defaultType = 'HEART_RATE', onClose, onSaved }: Props) {
   const { token } = useAuth();
+  const tr = useT();
   const [activeType, setActiveType] = useState<MetricType>(defaultType);
   const [value, setValue] = useState('');
   const [error, setError] = useState('');
   const [saved, setSaved] = useState(false);
   const [isPending, startTransition] = useTransition();
+
+  const TABS = TABS_STATIC.map((s) => ({
+    ...s,
+    label: s.type === 'HEART_RATE' ? tr.health.heartRate : s.type === 'STEPS' ? tr.health.steps : tr.health.sleep,
+    unit:  s.type === 'HEART_RATE' ? 'bpm' : s.type === 'STEPS' ? tr.health.stepsUnit : tr.health.sleepUnit,
+  }));
 
   const tab = TABS.find((t) => t.type === activeType)!;
   const Icon = tab.icon;
@@ -96,7 +56,7 @@ export function LogMetricModal({ isOpen, defaultType = 'HEART_RATE', onClose, on
 
     const num = parseFloat(value);
     if (isNaN(num) || num < tab.min || num > tab.max) {
-      setError(`${tab.min} – ${tab.max} ${tab.unit} oralig'ida kiriting`);
+      setError(tr.log.rangeErr(tab.min, tab.max, tab.unit));
       return;
     }
 
@@ -109,7 +69,7 @@ export function LogMetricModal({ isOpen, defaultType = 'HEART_RATE', onClose, on
           onSaved();
         }, 900);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Xatolik yuz berdi');
+        setError(err instanceof Error ? err.message : tr.log.error);
       }
     });
   }
@@ -133,7 +93,7 @@ export function LogMetricModal({ isOpen, defaultType = 'HEART_RATE', onClose, on
 
         {/* Header */}
         <div className="px-6 pt-4 pb-3 flex items-center justify-between">
-          <h2 className="text-[15px] font-black text-[#1A1A1A]">Ko'rsatkich kiritish</h2>
+          <h2 className="text-[15px] font-black text-[#1A1A1A]">{tr.log.title}</h2>
           <button
             onClick={handleClose}
             className="w-8 h-8 rounded-xl bg-gray-100 flex items-center justify-center text-gray-400 hover:bg-gray-200 transition-colors"
@@ -204,9 +164,7 @@ export function LogMetricModal({ isOpen, defaultType = 'HEART_RATE', onClose, on
 
           {/* Range hint */}
           <p className="text-[11px] text-gray-400 font-medium ml-1">
-            {activeType === 'HEART_RATE' && 'Normal: 60–100 bpm'}
-            {activeType === 'STEPS' && 'Kunlik maqsad: 10 000 qadam'}
-            {activeType === 'SLEEP' && 'Tavsiya: 7–9 soat'}
+            {tr.log.hints[activeType]}
           </p>
 
           <button
@@ -221,12 +179,12 @@ export function LogMetricModal({ isOpen, defaultType = 'HEART_RATE', onClose, on
             {saved ? (
               <>
                 <Check size={16} className="stroke-[3]" />
-                <span>Saqlandi!</span>
+                <span>{tr.log.saved}</span>
               </>
             ) : isPending ? (
               <Loader2 size={18} className="animate-spin" />
             ) : (
-              'Saqlash'
+              tr.log.save
             )}
           </button>
         </form>

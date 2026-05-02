@@ -14,23 +14,25 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/lib/contexts/auth-context';
 import { useAuthModal } from '@/lib/contexts/auth-modal-context';
+import { useT } from '@/lib/hooks/useT';
 import BrandLogo from '@/components/BrandLogo';
-
-const navItems = [
-  { label: 'Dashboard', icon: LayoutDashboard, href: '/', protected: false },
-  { label: 'Akkaunt', icon: User, href: '/akkaunt', protected: true },
-  { label: 'Suhbatlar', icon: MessageSquare, href: '/suhbatlar', protected: true },
-  { label: 'Mahsulot', icon: ShoppingBag, href: '/mahsulot', protected: true },
-  { label: 'Maskan', icon: MapPin, href: '/maskan', protected: true },
-  { label: 'Yaqinlar', icon: Heart, href: '#', protected: true },
-  { label: 'Xizmatlar', icon: Wrench, href: '#', protected: true },
-];
 
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const { user } = useAuth();
   const { openModal } = useAuthModal();
+  const tr = useT();
+
+  const navItems = [
+    { label: 'Dashboard',           icon: LayoutDashboard, href: '/',          protected: false },
+    { label: tr.menu.account.title,  icon: User,            href: '/akkaunt',   protected: true },
+    { label: tr.sidebar.messages,    icon: MessageSquare,   href: '/suhbatlar', protected: true },
+    { label: tr.menu.market.title,   icon: ShoppingBag,     href: '/mahsulot',  protected: true },
+    { label: tr.menu.home.title,     icon: MapPin,          href: '/maskan',    protected: true },
+    { label: tr.menu.family.title,   icon: Heart,           href: '#',          protected: true },
+    { label: tr.menu.service.title,  icon: Wrench,          href: '#',          protected: true },
+  ];
 
   function handleNav(href: string, isProtected: boolean) {
     if (isProtected && !user) {
@@ -58,7 +60,7 @@ export default function Sidebar() {
       {/* Navigation */}
       <nav className="flex-1 px-3 py-5 space-y-0.5 overflow-y-auto">
         <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest px-3 mb-3">
-          Menyu
+          {tr.sidebar.menu}
         </p>
         {navItems.map((item) => {
           const active = pathname === item.href;
@@ -96,7 +98,9 @@ export default function Sidebar() {
               </span>
             </div>
             <div className="min-w-0">
-              <p className="text-xs font-bold text-[#1A1A1A] truncate leading-none">{user.name ?? 'Foydalanuvchi'}</p>
+              <p className="text-xs font-bold text-[#1A1A1A] truncate leading-none">
+                {user.name ?? tr.sidebar.user}
+              </p>
               <p className="text-[10px] text-gray-400 truncate mt-0.5">{user.email ?? ''}</p>
             </div>
           </div>
@@ -106,12 +110,12 @@ export default function Sidebar() {
             className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-semibold text-teal-600 hover:bg-teal-50 transition-all"
           >
             <LogIn size={16} strokeWidth={2} />
-            Kirish
+            {tr.auth.loginTab}
           </button>
         )}
         <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-bold text-red-500 hover:bg-red-50 transition-all">
           <ShieldAlert size={16} strokeWidth={2} />
-          SOS Yordam
+          {tr.sidebar.sos}
         </button>
       </div>
     </aside>

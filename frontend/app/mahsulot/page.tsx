@@ -1,16 +1,16 @@
 'use client';
 
 import React, { useState } from 'react';
-import { 
-  ShoppingBag, 
-  Pill, 
-  ShoppingCart, 
-  Smartphone, 
-  Dumbbell, 
-  Sparkles, 
-  BookOpen, 
-  Shirt, 
-  Search, 
+import {
+  ShoppingBag,
+  Pill,
+  ShoppingCart,
+  Smartphone,
+  Dumbbell,
+  Sparkles,
+  BookOpen,
+  Shirt,
+  Search,
   Filter,
   Package,
   HeartPulse,
@@ -24,122 +24,59 @@ import CategoryTabs from '@/components/CategoryTabs';
 import ProductCard from '@/components/ProductCard';
 import BottomNav from '@/components/BottomNav';
 import { cn } from '@/lib/utils';
+import { useT } from '@/lib/hooks/useT';
 
-const categories = [
-  { name: "Barchasi", icon: ShoppingBag },
-  { name: "Dorixona", icon: Pill },
-  { name: "Oziq-ovqat", icon: Utensils },
-  { name: "Elektronika", icon: Laptop },
-  { name: "Salomatlik", icon: HeartPulse },
-  { name: "Go'zallik", icon: Sparkles },
-  { name: "Kitoblar", icon: BookOpen },
-  { name: "Kiyim", icon: Shirt }
+const CATEGORY_KEYS = [
+  { key: "Barchasi",   icon: ShoppingBag },
+  { key: "Dorixona",   icon: Pill },
+  { key: "Oziq-ovqat", icon: Utensils },
+  { key: "Elektronika",icon: Laptop },
+  { key: "Salomatlik", icon: HeartPulse },
+  { key: "Go'zallik",  icon: Sparkles },
+  { key: "Kitoblar",   icon: BookOpen },
+  { key: "Kiyim",      icon: Shirt },
 ];
 
-const products = [
-  {
-    name: "DoriDunyo",
-    description: "Dori-darmonlar onlayn. 0% komissiya va uyingizga tezkor yetkazib berish xizmati.",
-    rating: 4.9,
-    category: "Dorixona",
-    icon: Pill,
-    gradient: "bg-emerald-50",
-    colorClass: "text-emerald-600"
-  },
-  {
-    name: "GrandPharm",
-    description: "Dorixona tarmog'i. Keng turdagi assortiment va mutaxassis maslahati bepul.",
-    rating: 4.8,
-    category: "Dorixona",
-    icon: Package,
-    gradient: "bg-blue-50",
-    colorClass: "text-blue-600"
-  },
-  {
-    name: "FreshMarket",
-    description: "Sarxil mevalar, sabzavotlar va go'sht mahsulotlarini uyingizga yetkazib beramiz.",
-    rating: 4.8,
-    category: "Oziq-ovqat",
-    icon: Utensils,
-    gradient: "bg-emerald-50",
-    colorClass: "text-emerald-600"
-  },
-  {
-    name: "KorzinkaGo",
-    description: "Sevimli supermarketining rasmiy yetkazib berish xizmati. Sifat va tezlik.",
-    rating: 4.7,
-    category: "Oziq-ovqat",
-    icon: ShoppingCart,
-    gradient: "bg-orange-50",
-    colorClass: "text-orange-600"
-  },
-  {
-    name: "TechUz",
-    description: "Eng so'nggi rusumdagi gadjetlar va maishiy texnika vositalari kafolati bilan.",
-    rating: 4.7,
-    category: "Elektronika",
-    icon: Smartphone,
-    gradient: "bg-indigo-50",
-    colorClass: "text-indigo-600"
-  },
-  {
-    name: "SportNutrition",
-    description: "Sportchilar uchun sifatli vitaminlar va ozuqaviy qo'shimchalar toplami.",
-    rating: 4.6,
-    category: "Salomatlik",
-    icon: Dumbbell,
-    gradient: "bg-rose-50",
-    colorClass: "text-rose-600"
-  },
-  {
-    name: "BeautyShop",
-    description: "Professional kosmetika va terini parvarish qilish uchun maxsus vositalar.",
-    rating: 4.5,
-    category: "Go'zallik",
-    icon: Sparkles,
-    gradient: "bg-purple-50",
-    colorClass: "text-purple-600"
-  },
-  {
-    name: "KitobPlus",
-    description: "O'zbek va jahon adabiyoti durdonalari. Badiiy va ilmiy kitoblar olami.",
-    rating: 4.8,
-    category: "Kitoblar",
-    icon: BookOpen,
-    gradient: "bg-blue-50",
-    colorClass: "text-blue-600"
-  },
-  {
-    name: "StyleUz",
-    description: "Zamonaviy kiyim-kechaklar va eksklyuziv aksessuarlar kolleksiyasi.",
-    rating: 4.6,
-    category: "Kiyim",
-    icon: Shirt,
-    gradient: "bg-pink-50",
-    colorClass: "text-pink-600"
-  }
+const PRODUCTS_STATIC = [
+  { key: 'doriDunyo',      name: "DoriDunyo",      catKey: "Dorixona",   icon: Pill,          gradient: "bg-emerald-50", colorClass: "text-emerald-600", rating: 4.9 },
+  { key: 'grandPharm',     name: "GrandPharm",     catKey: "Dorixona",   icon: Package,       gradient: "bg-blue-50",    colorClass: "text-blue-600",    rating: 4.8 },
+  { key: 'freshMarket',    name: "FreshMarket",    catKey: "Oziq-ovqat", icon: Utensils,      gradient: "bg-emerald-50", colorClass: "text-emerald-600", rating: 4.8 },
+  { key: 'korzinkaGo',     name: "KorzinkaGo",     catKey: "Oziq-ovqat", icon: ShoppingCart,  gradient: "bg-orange-50",  colorClass: "text-orange-600",  rating: 4.7 },
+  { key: 'techUz',         name: "TechUz",         catKey: "Elektronika",icon: Smartphone,    gradient: "bg-indigo-50",  colorClass: "text-indigo-600",  rating: 4.7 },
+  { key: 'sportNutrition', name: "SportNutrition", catKey: "Salomatlik", icon: Dumbbell,      gradient: "bg-rose-50",    colorClass: "text-rose-600",    rating: 4.6 },
+  { key: 'beautyShop',     name: "BeautyShop",     catKey: "Go'zallik",  icon: Sparkles,      gradient: "bg-purple-50",  colorClass: "text-purple-600",  rating: 4.5 },
+  { key: 'kitobPlus',      name: "KitobPlus",      catKey: "Kitoblar",   icon: BookOpen,      gradient: "bg-blue-50",    colorClass: "text-blue-600",    rating: 4.8 },
+  { key: 'styleUz',        name: "StyleUz",        catKey: "Kiyim",      icon: Shirt,         gradient: "bg-pink-50",    colorClass: "text-pink-600",    rating: 4.6 },
 ];
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
+};
 
 export default function MahsulotPage() {
+  const tr = useT();
   const [activeCategory, setActiveCategory] = useState("Barchasi");
   const [searchQuery, setSearchQuery] = useState("");
 
+  const categories = CATEGORY_KEYS.map(({ key, icon }) => ({
+    key,
+    name: (tr.pages.mahsulot.cats as Record<string, string>)[key] ?? key,
+    icon,
+  }));
+
+  const products = PRODUCTS_STATIC.map(p => ({
+    ...p,
+    category: (tr.pages.mahsulot.cats as Record<string, string>)[p.catKey] ?? p.catKey,
+    description: (tr.pages.mahsulot.products as Record<string, string>)[p.key] ?? '',
+  }));
+
   const filteredProducts = products.filter(p => {
-    const matchesCategory = activeCategory === "Barchasi" || p.category === activeCategory;
-    const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    const matchesCategory = activeCategory === "Barchasi" || p.catKey === activeCategory;
+    const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           p.description.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
-  };
 
   return (
     <main className="min-h-screen bg-[#F8FAFC] pb-32">
@@ -151,9 +88,9 @@ export default function MahsulotPage() {
 
         <div className="pt-8">
           {/* Page Title */}
-          <SectionTitle 
-            title="Mahsulotlar"
-            subtitle="0% komissiya bilan xavfsiz savdo"
+          <SectionTitle
+            title={tr.pages.mahsulot.title}
+            subtitle={tr.pages.mahsulot.subtitle}
             icon={ShoppingBag}
             iconGradient="from-teal-500 to-blue-600"
           />
@@ -166,7 +103,7 @@ export default function MahsulotPage() {
               </div>
               <input
                 type="text"
-                placeholder="Mahsulot yoki do'kon qidirish..."
+                placeholder={tr.pages.mahsulot.searchPh}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full h-14 pl-14 pr-5 bg-white rounded-[24px] border border-gray-100 shadow-[0_4px_20px_rgba(0,0,0,0.02)] text-sm font-bold placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500/10 focus:border-teal-500 transition-all"
@@ -180,14 +117,14 @@ export default function MahsulotPage() {
           </div>
 
           {/* Categories */}
-          <CategoryTabs 
+          <CategoryTabs
             categories={categories}
             activeCategory={activeCategory}
             onCategoryChange={setActiveCategory}
           />
 
           {/* Product Grid */}
-          <motion.div 
+          <motion.div
             variants={containerVariants}
             initial="hidden"
             animate="visible"
@@ -195,15 +132,21 @@ export default function MahsulotPage() {
           >
             <AnimatePresence mode="popLayout">
               {filteredProducts.map((product) => (
-                <ProductCard 
+                <ProductCard
                   key={product.name}
-                  {...product}
+                  name={product.name}
+                  description={product.description}
+                  rating={product.rating}
+                  category={product.category}
+                  icon={product.icon}
+                  gradient={product.gradient}
+                  colorClass={product.colorClass}
                 />
               ))}
             </AnimatePresence>
-            
+
             {filteredProducts.length === 0 && (
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 className="col-span-full py-20 flex flex-col items-center justify-center text-center"
@@ -211,8 +154,8 @@ export default function MahsulotPage() {
                 <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-4 text-gray-300">
                   <ShoppingBag size={40} />
                 </div>
-                <h3 className="text-[#1A1C1E] text-lg font-black">Hech narsa topilmadi</h3>
-                <p className="text-gray-400 text-sm mt-1">Qidiruv so'rovini o'zgartirib ko'ring</p>
+                <h3 className="text-[#1A1C1E] text-lg font-black">{tr.pages.mahsulot.notFound}</h3>
+                <p className="text-gray-400 text-sm mt-1">{tr.pages.mahsulot.notFoundSub}</p>
               </motion.div>
             )}
           </motion.div>
@@ -221,4 +164,3 @@ export default function MahsulotPage() {
     </main>
   );
 }
-

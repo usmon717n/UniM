@@ -1,7 +1,13 @@
+'use client';
+
 import React from 'react';
 import { BellRing, Phone } from 'lucide-react';
+import { useT } from '@/lib/hooks/useT';
 
 const EmergencyCard = () => {
+  const tr = useT();
+  const m = tr.pages.maskan;
+
   return (
     <div className="px-5 mb-24">
       <div className="bg-gradient-to-br from-red-50/50 to-white rounded-[32px] p-6 border border-red-100 shadow-sm">
@@ -9,14 +15,14 @@ const EmergencyCard = () => {
           <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center text-red-500">
             <BellRing size={20} />
           </div>
-          <h2 className="text-[#1A1C1E] text-base font-black">Favqulodda raqamlar</h2>
+          <h2 className="text-[#1A1C1E] text-base font-black">{m.emergency}</h2>
         </div>
 
         <div className="grid grid-cols-1 gap-3">
           {[
-            { num: '101', text: 'Yong\'in xavfsizligi' },
-            { num: '102', text: 'Militsiya' },
-            { num: '103', text: 'Tez tibbiy yordam' }
+            { num: '101', text: m.fire },
+            { num: '102', text: m.police },
+            { num: '103', text: m.ambulance },
           ].map((item, idx) => (
             <div key={idx} className="flex items-center justify-between bg-white/60 p-3 rounded-2xl border border-red-50">
               <div className="flex items-center gap-3">

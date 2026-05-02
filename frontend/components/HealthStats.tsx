@@ -10,25 +10,26 @@ import {
   type MetricType,
 } from '@/lib/api/health';
 import { LogMetricModal } from './LogMetricModal';
+import { useT } from '@/lib/hooks/useT';
 
 // ── Status helpers ─────────────────────────────────────────────────────────
 
-const HR_STATUS = {
-  low:    { label: 'Past',    ring: 'ring-yellow-300/60', dot: 'bg-yellow-400' },
-  normal: { label: 'Normal',  ring: 'ring-green-300/60',  dot: 'bg-green-400'  },
-  high:   { label: 'Yuqori',  ring: 'ring-red-300/60',    dot: 'bg-red-400'    },
+const HR_STATUS_STYLE = {
+  low:    { ring: 'ring-yellow-300/60', dot: 'bg-yellow-400' },
+  normal: { ring: 'ring-green-300/60',  dot: 'bg-green-400'  },
+  high:   { ring: 'ring-red-300/60',    dot: 'bg-red-400'    },
 } as const;
 
-const STEPS_STATUS = {
-  behind:   { label: 'Orqada',   color: 'text-gray-400'    },
-  on_track: { label: 'Yo\'lda',  color: 'text-teal-500'    },
-  exceeded: { label: 'Bajarildi',color: 'text-emerald-600' },
+const STEPS_STATUS_COLOR = {
+  behind:   'text-gray-400',
+  on_track: 'text-teal-500',
+  exceeded: 'text-emerald-600',
 } as const;
 
-const SLEEP_STATUS = {
-  short: { label: 'Kam', color: 'text-orange-500' },
-  good:  { label: 'Yaxshi', color: 'text-violet-600' },
-  long:  { label: 'Ko\'p',  color: 'text-blue-500'  },
+const SLEEP_STATUS_COLOR = {
+  short: 'text-orange-500',
+  good:  'text-violet-600',
+  long:  'text-blue-500',
 } as const;
 
 const STEPS_GOAL = 10_000;
@@ -45,6 +46,7 @@ function Skeleton({ className }: { className: string }) {
 
 const HealthStats = () => {
   const { token } = useAuth();
+  const tr = useT();
   const [data, setData] = useState<HealthSummary | null>(null);
   const [loading, setLoading] = useState(false);
   const [logOpen, setLogOpen] = useState(false);
@@ -78,9 +80,13 @@ const HealthStats = () => {
   const steps = data?.steps;
   const sleep = data?.sleep;
 
-  const hrStatus = hr ? HR_STATUS[hr.status] : null;
-  const stepsStatusInfo = steps ? STEPS_STATUS[steps.status] : null;
-  const sleepStatusInfo = sleep ? SLEEP_STATUS[sleep.status] : null;
+  const hrStatus = hr ? { ...HR_STATUS_STYLE[hr.status], label: tr.health.hr[hr.status] } : null;
+  const stepsStatusInfo = steps
+    ? { label: tr.health.stepsStatus[steps.status], color: STEPS_STATUS_COLOR[steps.status] }
+    : null;
+  const sleepStatusInfo = sleep
+    ? { label: tr.health.sleepStatus[sleep.status], color: SLEEP_STATUS_COLOR[sleep.status] }
+    : null;
 
   return (
     <>
@@ -96,7 +102,7 @@ const HealthStats = () => {
             <button
               onClick={() => openLog('HEART_RATE')}
               className="absolute top-4 right-4 z-10 w-7 h-7 rounded-xl bg-gray-100 hover:bg-teal-50 hover:text-teal-600 text-gray-400 flex items-center justify-center transition-all duration-200 active:scale-90"
-              title="Yangi ma'lumot kiritish"
+              title={tr.health.logNew}
             >
               <Plus size={14} strokeWidth={2.5} />
             </button>
@@ -129,7 +135,7 @@ const HealthStats = () => {
                 />
               </div>
               <p className="text-[10px] sm:text-[11px] text-[#94A3B8] font-semibold uppercase tracking-wider mb-1 opacity-80">
-                Yurak urishi
+                {tr.health.heartRate}
               </p>
               {loading ? (
                 <Skeleton className="w-12 h-7" />
@@ -157,7 +163,7 @@ const HealthStats = () => {
                 </div>
               </div>
               <p className="text-[10px] sm:text-[11px] text-[#94A3B8] font-semibold uppercase tracking-wider mb-1 opacity-80">
-                Qadamlar
+                {tr.health.steps}
               </p>
               {loading ? (
                 <Skeleton className="w-16 h-7" />
@@ -184,7 +190,7 @@ const HealthStats = () => {
                 </div>
               </div>
               <p className="text-[10px] sm:text-[11px] text-[#94A3B8] font-semibold uppercase tracking-wider mb-1 opacity-80">
-                Uyqu
+                {tr.health.sleep}
               </p>
               {loading ? (
                 <Skeleton className="w-10 h-7" />
@@ -246,7 +252,7 @@ const HealthStats = () => {
                           {steps.calories} kcal
                         </span>
                         <span className="text-[10px] text-[#94A3B8] font-semibold">
-                          {steps.progress.toFixed(0)}% bajarildi
+                          {steps.progress.toFixed(0)}% {tr.health.done}
                         </span>
                       </div>
                     </div>
@@ -263,7 +269,7 @@ const HealthStats = () => {
                           </span>
                           {hr.weeklyAvg && (
                             <span className="text-[10px] text-[#94A3B8]">
-                              · 7 kun o'rt: {hr.weeklyAvg} bpm
+                              · {tr.health.weeklyAvg} {hr.weeklyAvg} bpm
                             </span>
                           )}
                         </div>
@@ -274,11 +280,11 @@ const HealthStats = () => {
                             {sleepStatusInfo?.label}
                           </span>
                           <span className="text-[10px] text-[#94A3B8]">
-                            · Sifat: {sleep.qualityScore}/100
+                            · {tr.health.quality} {sleep.qualityScore}/100
                           </span>
                           {sleep.sleepDebt > 0 && (
                             <span className="text-[10px] text-orange-400 font-semibold">
-                              · −{sleep.sleepDebt}h qarz
+                              · −{sleep.sleepDebt}h {tr.health.debt}
                             </span>
                           )}
                         </div>
@@ -297,7 +303,7 @@ const HealthStats = () => {
                 onClick={() => openLog('HEART_RATE')}
                 className="w-full py-2.5 rounded-2xl border border-dashed border-gray-200 text-[12px] font-semibold text-gray-400 hover:border-teal-300 hover:text-teal-500 transition-all duration-200"
               >
-                + Bugungi ko'rsatkichlarni kiriting
+                {tr.health.logToday}
               </button>
             </div>
           )}

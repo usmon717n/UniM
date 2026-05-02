@@ -7,11 +7,14 @@ import { useAuth } from '@/lib/contexts/auth-context';
 import { useAuthModal } from '@/lib/contexts/auth-modal-context';
 import { cn } from '@/lib/utils';
 import BrandLogo from '@/components/BrandLogo';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
+import { useT } from '@/lib/hooks/useT';
 
 const Header = () => {
   const { user } = useAuth();
   const { openModal } = useAuthModal();
   const router = useRouter();
+  const tr = useT();
 
   function guard(href: string) {
     if (!user) {
@@ -65,7 +68,7 @@ const Header = () => {
               className="flex items-center gap-2 sm:gap-3"
             >
               <h1 className="text-[22px] sm:text-[32px] font-bold tracking-[-0.03em] leading-tight text-[#0F172A] truncate">
-                Salom, <span className="bg-gradient-to-r from-[#0EA5A4] to-[#3B82F6] bg-clip-text text-transparent">{firstName}!</span>
+                {tr.greetingPrefix} <span className="bg-gradient-to-r from-[#0EA5A4] to-[#3B82F6] bg-clip-text text-transparent">{firstName}!</span>
               </h1>
               <motion.div
                 whileHover={{ rotate: 20, scale: 1.1 }}
@@ -80,13 +83,15 @@ const Header = () => {
               transition={{ delay: 0.3 }}
               className="text-[#94A3B8] text-[11px] sm:text-[13px] font-medium uppercase tracking-[0.1em] sm:tracking-[0.15em] opacity-90 leading-none truncate"
             >
-              AVIMED: <span className="text-[#64748B]">Shu yerda va hozir</span>
+              AVIMED: <span className="text-[#64748B]">{tr.tagline}</span>
             </motion.p>
           </div>
         </div>
 
-        {/* Right Side: Empty for a cleaner, minimalist look */}
-        <div className="w-10 sm:w-12 shrink-0" />
+        {/* Right Side: Language Switcher */}
+        <div className="shrink-0">
+          <LanguageSwitcher />
+        </div>
       </div>
     </header>
   );
